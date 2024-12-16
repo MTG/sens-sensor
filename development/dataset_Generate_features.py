@@ -16,7 +16,7 @@ print("src dir ", src_dir)
 sys.path.append(src_dir)
 
 # Imports from this project
-from development.lib.dataset.dataset_functions import (
+from development.lib.dataset_functions import (
     generate_dataset,
 )
 
