@@ -42,7 +42,14 @@ In order to reproduce the creation of the models for predicting Pleasantness and
 
         It must be run in the command line with
         ```
-        
+        python development/dataset_Generate_features.py --data_path path/to/data/folder --type araus
+        # for generating CLAP dataset for ARAUS dataset augmented soundscapes, requires responses_adapted.csv in data/files/
+
+        python development/dataset_Generate_features.py --data_path path/to/data/folder --type new
+        # for generating CLAP dataset for fold-Fs soundscape audios, requires responses_fold_Fs.csv in data/files/
+
+        python development/dataset_Generate_features.py --data_path path/to/data/folder --type both
+        # for both
         ```
 
 ## Environment configuration
