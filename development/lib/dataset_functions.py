@@ -22,6 +22,8 @@ from development.lib.auxiliars import (
 )
 from development.lib.dataset_functions import save_wav, delete_wav
 
+# region ARAUS dataset - Pleasantness and Eventfulness Predictions
+
 
 def import_json_to_dataframe(json_path: str, save: bool, saving_path: str):
     """
@@ -718,3 +720,154 @@ def delete_wav(filepath):
         print(f"File '{filepath}' not found.")
     except Exception as e:
         print(f"Error deleting file '{filepath}': {e}")
+
+
+# endregion
+
+# region USM dataset - Sound Sources Predictions
+
+
+def generate_features_USM(directory_path: str, model_clap, fold, sources_USM: list):
+    """
+    Reads a directory containing audio files from the USM dataset, processes each audio file to generate CLAP embeddings,
+    and creates a JSON file for the new dataset, USM-extension. The JSON file contains metadata about each audio file,
+    including the CLAP embeddings and binary multilabels indicating the presence of different sound sources.
+
+    Parameters:
+    - directory_path (str): The path to the directory containing the audio files from the USM dataset.
+    - model_clap (CLAP): CLAP model that will be used to generate embeddings for the audio files.
+    - fold (str): fold, or name of group of audios, being processed
+    - sources_USM: sound sources labels that will form part of the dataset
+
+    Returns:
+    - json_entries (JSON): Output dataset in a JSON file.
+    """
+
+    # Initialize
+    json_entries = []
+
+    # Get all relevant files (audios) in the directory and sort them numerically
+    all_files = [f for f in os.listdir(directory_path) if f.endswith("_mix.wav")]
+    all_files.sort(key=lambda f: int(f.split("_")[0]))
+    # Iterate over all files in the directory
+    for file_name in all_files:
+        if file_name.endswith("_mix.wav"):
+
+            # Construct the full path to the wav file
+            wav_file_path = os.path.join(directory_path, file_name)
+
+            # Extract the index from the file name (e.g., "0" from "0_mix.wav")
+            index = file_name.split("_")[0]
+
+            print(index, ", ", fold)
+
+            # Construct the corresponding target file name
+            if len(sources_USM) == 26:  # If USM sound sources list has been inputted
+                target_file_name = f"{index}_mix_target.npy"
+            elif (
+                len(sources_USM) == 8
+            ):  # If USM simplified sound sources list has been inputted
+                target_file_name = f"{index}_mix_target_simp.npy"
+            target_file_path = os.path.join(directory_path, target_file_name)
+
+            # Check if the corresponding target file exists
+            if os.path.exists(target_file_path):
+
+                # Extract features of audio
+                # start_time_CLAP = time.time()
+                embedding = model_clap.get_audio_embedding_from_filelist(
+                    [wav_file_path], use_tensor=False
+                )[0]
+                # duration_time_CLAP = time.time() - start_time_CLAP
+                # print("Embedding calculated in ", duration_time_CLAP, " seconds")
+
+                # Create new entry
+                entry = {
+                    "file_name": file_name,
+                    "target_file_name": target_file_name,
+                    "fold": fold,
+                    "index": index,
+                }
+
+                # Import multi-label array
+                multiclass_vector = np.load(target_file_path)
+
+                # Expand the embeddings into separate columns
+                for i, name in enumerate(clap_features):
+                    entry[name] = float(embedding[i])
+
+                # Expand the binary multi-labels into separate columns
+                for i, source in enumerate(sources_USM):
+                    entry[source] = float(multiclass_vector[i])
+
+        # Add new entry to JSON
+        json_entries.append(entry)
+
+    return json_entries
+
+
+def generate_USM_extension_dataset(
+    list_directory_path: list,
+    clap_model_path: str,
+    sources_USM: list,
+    saving_folder: str,
+):
+    """
+    Reads a list of directories containing audio files from the USM dataset (one for each fold or group of audios),
+    processes each audio file to generate CLAP embeddings, and creates a complete and general JSON
+    file for the new dataset, USM-extension. The JSON file contains metadata about each audio file, including the
+    CLAP embeddings and binary multilabels indicating the presence of different sound sources.
+
+    Parameters:
+    - list_directory_path (list): List of paths to the directories containing the audio files from the USM dataset.
+        Each directory consists of the audios corresponding to one fold of USM.
+    - clap_model_path (CLAP):Path to the CLAP model that will be used to generate embeddings for the audio files.
+    - sources_USM: sound sources labels that will form part of the dataset
+    - saving_folder (str): Path to folder.
+
+    Returns:
+    - combined_data (JSON): Output dataset in a JSON file. Also, the function writes this JSON to a JSON file.
+    """
+
+    # Initialize
+    combined_data = []
+
+    # Load clap model
+    print("------- code starts -----------")
+    model_clap = CLAP_Module(enable_fusion=True)
+    print("------- clap module -----------")
+    model_clap.load_ckpt(clap_model_path)
+    print("------- model loaded -----------")
+
+    for fold_directory_path in list_directory_path:
+
+        # Fold name
+        fold = fold_directory_path.split("/")[2]
+        print("Fold ", fold)
+
+        # Generate features for fold
+        fold_json = generate_features_USM(
+            fold_directory_path, model_clap, fold, sources_USM
+        )
+
+        # Add to general json
+        combined_data.extend(fold_json)
+
+    # Check if the directory exists
+    if not os.path.exists(saving_folder):
+        # If it doesn't exist, create it
+        os.makedirs(saving_folder)
+        print(f"Directory {saving_folder} created.")
+
+    # Save the combined data to a new JSON file
+    with open(os.path.join(saving_folder, "USM_CLAP_dataset.json"), "w") as outfile:
+        json.dump(combined_data, outfile, indent=4)
+
+    # Save the combined data to a CSV file
+    df_csv = pd.DataFrame(combined_data)
+    df_csv.to_csv(os.path.join(saving_folder, "USM_CLAP_dataset.csv"), index=False)
+
+    return combined_data
+
+
+# endregion
