@@ -20,7 +20,7 @@ sys.path.append(src_dir)
 
 # Imports from this project
 from development.lib.models_functions import train_RFR
-from development.lib.features_groups import (
+from development.lib.auxiliars import (
     clap_features,
 )
 
