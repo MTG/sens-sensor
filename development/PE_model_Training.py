@@ -33,7 +33,7 @@ def main(data_path):
     data_foldFs_path = os.path.join(
         data_path, "files/fold_Fs_CLAP/fold-Fs_CLAP_dataset.csv"
     )
-    saving_folder = os.path.join(data_path, "models/trained")
+    saving_folder = os.path.join(data_path, "models/")
 
     ############# RUN ###################################################################
     # MODEL FOR PLEASANTNESS PREDICTION
