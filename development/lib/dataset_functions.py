@@ -17,10 +17,10 @@ from scipy.signal import resample
 
 
 # Imports from this project
-from lib.dataset.features_groups import (
+from development.lib.auxiliars import (
     clap_features,
 )
-from development.lib.dataset.wav_files import save_wav, delete_wav
+from development.lib.dataset_functions import save_wav, delete_wav
 
 
 def import_json_to_dataframe(json_path: str, save: bool, saving_path: str):
