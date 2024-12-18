@@ -921,14 +921,14 @@ def generate_features_US8k(dataset_path, data_path, saving_folder):
 
     # Write the JSON entries to a file
     with open(
-        os.path.join(data_path, saving_folder, saving_folder + ".json"), "w"
+        os.path.join(data_path, saving_folder, "US8k_CLAP_dataset.json"), "w"
     ) as f:
         json.dump(json_entries, f, indent=4)
 
     # Save  data to a CSV file
     df_csv = pd.DataFrame(json_entries)
     df_csv.to_csv(
-        os.path.join(data_path, saving_folder, saving_folder + ".csv"), index=False
+        os.path.join(data_path, saving_folder, "US8k_CLAP_dataset.csv"), index=False
     )
 
 

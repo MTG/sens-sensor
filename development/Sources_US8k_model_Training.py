@@ -37,6 +37,7 @@ def main(data_path):
         "jackhammer": "linear",
         "siren": "linear",
         "street_music": "linear",
+        "construction": "linear",
     }  # list of best performing algorithms for each source_USM (same order as sources list)
     saving_path = os.path.join(
         data_path, "models/sources_US8k"
