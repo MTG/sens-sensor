@@ -16,7 +16,7 @@ from development.lib.models_functions import train_USM_models
 def main(data_path):
     # RUN ########################################################################
     dataset_path = os.path.join(
-        data_path, "USM/usm_simplified.json"
+        data_path, "files/USM_CLAP_dataset/USM_CLAP_dataset.json"
     )  # path to json file containing USM-extended
     algorithms = {
         "birds": "linear",
@@ -29,7 +29,7 @@ def main(data_path):
         "vehicles": "l_r",
     }  # list of best performing algorithms for each source_USM (same order as sources list)
     saving_path = os.path.join(
-        data_path, "models/sources_USM"
+        data_path, "models/sources_USM_new"
     )  # path to folder where to save the models
 
     train_USM_models(dataset_path, algorithms, saving_path)

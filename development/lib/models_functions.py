@@ -449,3 +449,149 @@ def train_USM_model(
 
 
 # endregion
+
+# region US8k
+
+
+def train_US8k_models(data_path: str, algorithms: dict, saving_path: str):
+    """
+    Trains prediction models for a list of sound sources using specified algorithms based on the USM-extended dataset.
+
+    Parameters:
+    - data_path (str):
+        The path to the JSON file containing the generated US8k-CLAP dataset.
+    - algorithms (dict):
+        Dict of the pairs source-algorithms, specifying which algorithm to use for training the model to predict each source.
+    - saving_path (str):
+        The folder path where the trained models will be saved after training.
+
+    Returns:
+    - None:
+        The function saves the trained models to the specified directory and does not return any value.
+    """
+
+    # Check if the directory exists
+    if not os.path.exists(saving_path):
+        # If it doesn't exist, create it
+        os.makedirs(saving_path)
+        print(f"Directory {saving_path} created.")
+
+    # Import data from json
+    with open(data_path, "r") as f:
+        data = json.load(f)
+        # Convert JSON data back to DataFrame
+        df = pd.DataFrame(data)
+
+    for source in algorithms:
+
+        # Train
+        train_US8k_model(df, source, saving_path, algorithms[source])
+
+
+def train_US8k_model(
+    df: pd.DataFrame, one_class: str, saving_model_path: str, model_choice: str
+):
+    """
+    Trains a prediction model for a specified sound source using a given algorithm and saves the trained model.
+
+    Parameters:
+    - df (pandas.DataFrame):
+        The DataFrame containing the USM-extended dataset, with CLAP embeddings and binary multilabels for various sources.
+    - one_class (str):
+        The specific sound source that the model will be trained to predict. This should match a column in the DataFrame
+        that contains the binary labels for the presence of this sound source.
+    - saving_model_path (str):
+        The complete file path where the trained model will be saved. This should include the filename and extension (e.g., '.pkl').
+    - model_choice (str):
+        The algorithm to be used for training the model. Options might include "l_r" for logistic regression, "r_f" for random forest,
+        "KNN" or "linear" for SVC with linear kernel.
+
+    Returns:
+    - None:
+        The function trains the model and saves it to the specified path. It does not return any value.
+    """
+
+    txt_name = os.path.join(saving_model_path, one_class + "_model_info.txt")
+    with open(txt_name, "a") as f:
+        highest_precision_val = 0
+        # Iterate over folds (1 to 10 if fold column has values 1-10)
+        for fold in sorted(df["fold"].unique()):
+            f.write(f"Fold {fold}")
+            f.write("\n")
+
+            # Extract dataframes
+            df_train = df[df["fold"] != fold]
+            df_val = df[df["fold"] == fold]
+
+            # Get ground-truth
+            Y_train = df_train[one_class].values
+            Y_val = df_val[one_class].values
+            # print("Y_train ", Y_train.shape)
+            # print("Y_val ", Y_val.shape)
+
+            # Get feature matrices
+            X_train = df_train[clap_features].values
+            X_val = df_val[clap_features].values
+
+            # print("X_train ", X_train.shape)
+            # print("X_val ", X_val.shape)
+
+            # Initialize the classifier
+            if model_choice == "l_r":
+                f.write("Model type: l_r")
+                f.write("\n")
+                model = LogisticRegression(solver="lbfgs", max_iter=10000)
+            elif model_choice == "r_f":
+                f.write("Model type: r_f")
+                f.write("\n")
+                model = RandomForestClassifier(10)
+            elif model_choice == "KNN":
+                f.write("Model type: knn")
+                f.write("\n")
+                model = KNeighborsClassifier(n_neighbors=5)
+            elif model_choice == "linear":
+                f.write("Model type: linear")
+                f.write("\n")
+                model = SVC(kernel="linear", probability=True)
+
+            # Train the model
+            model.fit(X_train, Y_train)
+
+            # Predict on the test set
+            Y_train_pred = model.predict(X_train)
+            Y_val_pred = model.predict(X_val)
+
+            # Evaluate the model
+            accuracy_train = accuracy_score(Y_train, Y_train_pred)
+            accuracy_val = accuracy_score(Y_val, Y_val_pred)
+            precision_train = precision_score(Y_train, Y_train_pred, zero_division=0)
+            precision_val = precision_score(Y_val, Y_val_pred, zero_division=0)
+
+            f.write(f"Accuracy score TRAIN: {accuracy_train}")
+            f.write("\n")
+            f.write(f"Accuracy score VAL: {accuracy_val}")
+            f.write("\n")
+            f.write(f"Precision score TRAIN: {precision_train}")
+            f.write("\n")
+            f.write(f"Precision score VAL: {precision_val}")
+            f.write("\n")
+            f.flush()  # update file content
+
+            if precision_val > highest_precision_val:
+                highest_precision_val = precision_val
+                model_to_save = copy.deepcopy(model)
+                fold_used = fold
+        f.write("- - - - - - - - ")
+        f.write(
+            f"Model saved with validation fold {fold_used}, the other folds were used for training."
+        )
+        f.write("\n")
+        # Define model saving path
+        saving_model_path = os.path.join(saving_model_path, one_class + ".joblib")
+        # Save model to given path
+        dump(model_to_save, saving_model_path)
+
+        print("Saved model for class:", one_class)
+
+
+# endregion
