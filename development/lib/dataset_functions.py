@@ -14,13 +14,19 @@ from scipy.io.wavfile import WavFileWarning
 import warnings
 from CLAP.src.laion_clap import CLAP_Module
 from scipy.signal import resample
+import sys
 
+# Path importing
+current_dir = os.path.dirname(os.path.abspath(__file__))
+print("current dir ", current_dir)
+src_dir = os.path.abspath(os.path.join(current_dir, "../"))
+print("src dir ", src_dir)
+sys.path.append(src_dir)
 
 # Imports from this project
 from development.lib.auxiliars import (
     clap_features,
 )
-from development.lib.dataset_functions import save_wav, delete_wav
 
 # region ARAUS dataset - Pleasantness and Eventfulness Predictions
 
@@ -868,6 +874,62 @@ def generate_USM_extension_dataset(
     df_csv.to_csv(os.path.join(saving_folder, "USM_CLAP_dataset.csv"), index=False)
 
     return combined_data
+
+
+# endregion
+
+# region US8K dataset - Sound Sources Predictions
+
+
+def generate_features_US8k(dataset_path, data_path, saving_folder):
+    # Load the model
+    print("------- code starts -----------")
+    model = CLAP_Module(enable_fusion=True)
+    print("------- clap module -----------")
+    model.load_ckpt("data/models/630k-fusion-best.pt")
+    print("------- model loaded -----------")
+
+    # Read dataframe
+    df = pd.read_csv(dataset_path)
+    # Initialize empty list to store JSON entries
+    json_entries = []
+    # Iterate over rows and calculate CLAP features for each audio
+    for index, row in df.iterrows():
+        print(index + 1, "/8732")
+        audio_path = os.path.join(data_path, row["audio_path"])
+        embedding = model.get_audio_embedding_from_filelist(
+            [audio_path], use_tensor=False
+        )[0]
+        # print("Embedding calculated in ", duration_time_CLAP, " seconds")
+        # Create new entry
+        entry = row.to_dict()
+
+        # Expand the embeddings into separate columns
+        for i, name in enumerate(clap_features):
+            entry[name] = float(embedding[i])
+
+        print(entry)
+
+        # Add new entry to JSON
+        json_entries.append(entry)
+
+    # Check if the directory exists
+    if not os.path.exists(os.path.join(data_path, saving_folder)):
+        # If it doesn't exist, create it
+        os.makedirs(os.path.join(data_path, saving_folder))
+        print(f"Directory {os.path.join(data_path,saving_folder)} created.")
+
+    # Write the JSON entries to a file
+    with open(
+        os.path.join(data_path, saving_folder, saving_folder + ".json"), "w"
+    ) as f:
+        json.dump(json_entries, f, indent=4)
+
+    # Save  data to a CSV file
+    df_csv = pd.DataFrame(json_entries)
+    df_csv.to_csv(
+        os.path.join(data_path, saving_folder, saving_folder + ".csv"), index=False
+    )
 
 
 # endregion
