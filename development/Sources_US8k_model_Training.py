@@ -64,39 +64,5 @@ if __name__ == "__main__":
     # Call main function
     main(data_path)
 
-""" # Inputs
-data_path = "data/files/UrbanSound8K_embeddings.json"
-saving_path = "data/models/KNN_classification_model_complete.joblib"
-
-############################## PREPARE DATA ##################################
-# Import data from json
-with open(data_path, "r") as f:
-    data = json.load(f)
-    # Convert JSON data back to DataFrame
-    df = pd.DataFrame(data)
-
-##############################################################################
-
-
-def KNN_model_save(df: pd.DataFrame, n_neighbors: int, saving_path: str):
-
-    # Create model
-    n_neighbors = n_neighbors
-    model = KNeighborsClassifier(n_neighbors=n_neighbors)
-
-    # Get ground-truth labels
-    Y_train = df["classID"].values
-    # print("Y_train ", Y_train.shape)
-
-    # Get feature matrices
-    X_train = df[clap_features].values
-    # print("X_train ", X_train.shape)
-
-    # Fit model
-    model.fit(X_train, Y_train)
-
-    # Save model
-    dump(model, saving_path)
-
-
-KNN_model_save(df, 30, saving_path) """
+# Run command  example (where sens-sensor/data is where the data is found):
+# python development/Sources_US8k_model_Training.py --data_path data

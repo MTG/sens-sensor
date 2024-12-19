@@ -52,3 +52,6 @@ if __name__ == "__main__":
 
     # Call main function
     main(data_path)
+
+# Run command  example (where sens-sensor/data is where the data is found):
+# python development/Sources_USM_dataset_Generation.py --data_path data

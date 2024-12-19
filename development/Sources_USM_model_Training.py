@@ -29,7 +29,7 @@ def main(data_path):
         "vehicles": "l_r",
     }  # list of best performing algorithms for each source_USM (same order as sources list)
     saving_path = os.path.join(
-        data_path, "models/sources_USM_new"
+        data_path, "models/sources_USM"
     )  # path to folder where to save the models
 
     train_USM_models(dataset_path, algorithms, saving_path)
@@ -52,3 +52,6 @@ if __name__ == "__main__":
 
     # Call main function
     main(data_path)
+
+# Run command  example (where sens-sensor/data is where the data is found):
+# python development/Sources_USM_model_Training.py --data_path data
