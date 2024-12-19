@@ -89,3 +89,6 @@ if __name__ == "__main__":
 
     # Call main function
     main(data_path, dataset_type)
+
+# Run command  example (where sens-sensor/data is where the data is found):
+# python development/PE_dataset_Generation.py --data_path data

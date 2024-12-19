@@ -78,5 +78,5 @@ if __name__ == "__main__":
     # Call main function
     main(data_path)
 
-# Example of command line:
-# python development/models_train.py --data_path data
+# Run command  example (where sens-sensor/data is where the data is found):
+# python development/PE_model_Training.py --data_path data
