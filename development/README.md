@@ -43,7 +43,7 @@ The following bullet points constitute the keys for the development of these mod
 
 In order to reproduce the creation of the models for predicting Pleasantness and Eventfulness, the following steps need to be followed, indicated with the neccessary instructions and code:
 
-1) Download ARAUS dataset and source code from <a href="https://github.com/ntudsp/araus-dataset-baseline-models"> ARAUS Github page </a>. Once installation processed is completed and the necessary files have been downloaded as indicated, run the script below to generate the 25k augmented soundscapes.
+1) Download ARAUS dataset and source code from <a href="https://github.com/ntudsp/araus-dataset-baseline-models"> ARAUS Github page </a>. Once installation process is completed and the necessary files have been downloaded as indicated, run the script below to generate the 25k augmented soundscapes.
 
    ``` 
    araus-dataset-baselines-models/code/make_augmented_soundscapes.py
@@ -146,7 +146,7 @@ The following bullet points constitute the keys for the development of these mod
 ## Reproducibility of model creation
 In order to reproduce the creation of the models for predicting the sound sources birds, construction, dogs, human, music, nature, siren, vehicles; the following steps need to be followed, indicated with the neccessary instructions and code:
 
-1) Download USM dataset <a href="https://github.com/jakobabesser/USM"> USM Github page </a>. Once installation processed is completed and the necessary files have been downloaded as indicated, locate them in the data folder:
+1) Download USM dataset <a href="https://github.com/jakobabesser/USM"> USM Github page </a>. Once installation process is completed and the necessary files have been downloaded as indicated, locate them in the data folder:
 
    ``` 
     # sens-sensor/data tree
@@ -166,7 +166,7 @@ In order to reproduce the creation of the models for predicting the sound source
 
    1) Adapt USM original dataset for extension 
         
-        <a href="Sources_USM_dataset_Adequation.ipynb">Sources_USM_dataset_Adequation.ipynb</a> offers a guide of the adaptation needed. It reads all USM data, deleting the files that are nor needed, and simplifies the sound sources provided by USM dataset following the mapping below. It generates a ```_simp.npy``` version for each audio, containing the binary vector of the active sources.
+        <a href="Sources_USM_dataset_Adequation.ipynb">Sources_USM_dataset_Adequation.ipynb</a> offers a guide of the adaptation needed. It reads all USM data, deleting the files that are not needed, and simplifies the sound sources provided by USM dataset following the mapping below. It generates a ```_simp.npy``` version for each audio, containing the binary vector of the active sources.
 
         <p>
           <img src="../data/images/USM_mapping.png" alt=" USM mapping schema"  style="float: left;margin-right: 10px;">
@@ -208,7 +208,7 @@ In order to reproduce the creation of the models for predicting the sound source
 
     3) Train model
    
-        <a href="Sources_USM_model_Training.py">Sources_USM_model_Training.py</a> trains models models for predicting the corresponding algorithm, respectively, using a variety of algorithms (indicated in the python file).
+        <a href="Sources_USM_model_Training.py">Sources_USM_model_Training.py</a> trains models for predicting the corresponding sources, respectively, using a variety of algorithms (indicated in the python file).
 
         It must be run in the command line with
 
@@ -240,7 +240,123 @@ In order to reproduce the creation of the models for predicting the sound source
 
 
 ## US8k - SOUND SOURCES PREDICTION
+This section of the repository includes the code to train models that predict the sound sources air conditioner, car horn, children playing, dog bark, drilling, engine idling, gun shot, jackhammer, siren, street music.
 
+The following bullet points constitute the keys for the development of these models.
+
+- **Dataset** 
+  
+  We use the audios proposed in <a href="https://urbansounddataset.weebly.com/urbansound8k.html"> Urban Soundscapes 8k dataset </a>. 
+
+- **Features** 
+  
+  <a href="https://github.com/LAION-AI/CLAP">LAION-AI's CLAP model</a> is used to generate the sound representations for the soundscapes. In particular, we use LAION-AI's pre-trained model *630k-fusion-best.pt*.
+
+  ```
+  # sens-sensor/data tree
+  ├── data
+  │   ├── models
+  │   │   ├── 630k-fusion-best.pt
+  ```
+
+
+## Reproducibility of model creation
+In order to reproduce the creation of the models for predicting the sound sources birds, construction, dogs, human, music, nature, siren, vehicles; the following steps need to be followed, indicated with the neccessary instructions and code:
+
+1) Download US8k dataset <a href="https://urbansounddataset.weebly.com/urbansound8k.html"> US8k webpage </a>. Once installation processed is completed and the necessary files have been downloaded as indicated, locate them in the data folder:
+
+   ``` 
+    # sens-sensor/data tree
+    ├── data
+    │   ├── UrbanSoundscapes8K
+    │   │   ├── audio
+    │   │   │   ├── fold1
+    │   │   │   ├── fold2
+    │   │   │   ├── fold3
+    │   │   │   ├── fold4
+    │   │   │   ├── fold5
+    │   │   │   ├── fold6
+    │   │   │   ├── fold7
+    │   │   │   ├── fold8
+    │   │   │   └── fold9
+    │   │   └── metadata
+    │   │       ├── UrbanSound8K.csv
+
+   ```
+   **From US8k dataset we are only making use of the WAV files and UrbanSound8K.csv**
+
+
+2) After some research (see <a href="#references">References section</a>), CLAP embeddings demonstrated strong performance in terms of prediction accuracy and suitability for real-time processing. The steps below determine the guide to obtain the dataset to train the models.
+   
+   *NOTE: Set up your environment following the instructions in <a href="#environment-configuration">Environment configuration section</a>.*
+
+   1) Adapt US8k original dataset for extension 
+        
+        <a href="Sources_US8k_dataset_Adequation.ipynb">Sources_US8k_dataset_Adequation.ipynb</a> offers a guide of the adaptation needed. It reads UrbanSound8K.csv, adding one column per sound source. Each of these columns contains binary information 1 or 0 depending on the presence of the sound source in the audio. Additionally, a new source and column "construction" is added mapping the sources "drilling" or "jackhammer". The output is  UrbanSound8K_adapted.csv.
+        ``` 
+        # sens-sensor/data tree
+          ├── data
+          │   ├── files
+          │   │   ├── UrbanSound8K_adapted.csv
+
+        ```
+
+   1) Generate dataset
+        
+        <a href="Sources_US8k_dataset_Generation.py">Sources_US8k_dataset_Generation.py</a> generates a general JSON and a general CSV with the embeddings for the set of audios indicated. 
+
+        It must be run in the command line with
+        ```
+        python development/Sources_US8k_dataset_Generation.py --data_path path/to/data/folder
+        ```
+
+        This will result in the following files, containing the new datasets: CLAP embeddings for each audio + metainformation.
+        ```
+        ├── data
+        │   ├── files
+        │   │   ├── UrbanSound8K_CLAP_dataset
+        │   │   │   ├── UrbanSound8K_CLAP_dataset.csv
+        │   │   │   └── UrbanSound8K_CLAP_dataset.json
+        │   │   ├── UrbanSound8K_adapted.csv
+        ```
+
+    2) Train model
+   
+        <a href="Sources_US8k_model_Training.py">Sources_US8k_model_Training.py</a> trains models for predicting the corresponding source, respectively, using the algorithms indicated in the python file.
+
+        It must be run in the command line with
+
+        ```
+        python development/Sources_US8k_model_Training.py --data_path path/to/data/folder
+        ```
+        This will result in the following files:
+        ```
+        ├── data
+        │   ├── models
+        │   │   └── sources_US8k
+        │   │   │   ├── air_conditioner.joblib
+        │   │   │   ├── air_conditioner_model_info.txt
+        │   │   │   ├── car_horn.joblib
+        │   │   │   ├── car_horn_model_info.txt
+        │   │   │   ├── children_playing.joblib
+        │   │   │   ├── children_playing_model_info.txt
+        │   │   │   ├── construction.joblib
+        │   │   │   ├── construction_model_info.txt
+        │   │   │   ├── dog_bark.joblib
+        │   │   │   ├── dog_bark_model_info.txt
+        │   │   │   ├── drilling.joblib
+        │   │   │   ├── drilling_model_info.txt
+        │   │   │   ├── engine_idling.joblib
+        │   │   │   ├── engine_idling_model_info.txt
+        │   │   │   ├── gun_shot.joblib
+        │   │   │   ├── gun_shot_model_info.txt
+        │   │   │   ├── jackhammer.joblib
+        │   │   │   ├── jackhammer_model_info.txt
+        │   │   │   ├── siren.joblib
+        │   │   │   ├── siren_model_info.txt
+        │   │   │   ├── street_music.joblib
+        │   │   │   └── street_music_model_info.txt
+        ```
 ## Environment configuration
 
 ## References
