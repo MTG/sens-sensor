@@ -1,6 +1,21 @@
-## PLEASANTNESS AND EVENTFULNESS PREDICTION
+# SENS development
+This section of the repository includes the code to train models that predict the perceptual qualities of Pleasantness and Eventfulness, and sound sources like vehicles, birds, dogs, construction... 
 
-This section of the repository includes the code to train models that predict the perceptual qualities of Pleasantness and Eventfulness, see a more detailed research in the documents proposed in <a href="#references">References section</a>.
+To allow reproducibility of the model generation, we provide information about the datasets that were used and how they were processed, as well as the code to generate the new feature set that was then used to train the prediction models.
+
+In the following chart you can find a quick summary of the models generated and links to the sections of this README that explain the complete process in further detail.
+
+| Original Dataset                     | Used for training models that predict...                                                                                  | Link to section                                                          |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| ARAUS dataset                        | pleasantness, eventfulness                                                                                                | <a href="#araus---pleasantness-and-eventfulness-prediction">Section </a> |
+| Urban Sound Monitoring (USM) Dataset | birds, construction, dogs, human, music, nature, siren, vehicles                                                          | <a href="#usm---sound-sources-prediction">Section </a>                   |
+| UrbanSound8k Dataset (US8k)          | air conditioner, car horn, children playing, dog bark, drilling, engine idling, gun shot, jackhammer, siren, street music | <a href="#us8k---sound-sources-prediction">Section </a>                  |
+
+
+
+## ARAUS - PLEASANTNESS AND EVENTFULNESS PREDICTION
+
+This section of the repository includes the code to train models that predict the perceptual qualities of Pleasantness and Eventfulness (this is fundamented on previous research, detailed information in the documents proposed in <a href="#references">References section</a>).
 
 The following bullet points constitute the keys for the development of these models.
 
@@ -11,6 +26,13 @@ The following bullet points constitute the keys for the development of these mod
 - **Features** 
   
   <a href="https://github.com/LAION-AI/CLAP">LAION-AI's CLAP model</a> is used to generate the sound representations for the augmented soundscapes. In particular, we use LAION-AI's pre-trained model *630k-fusion-best.pt*.
+
+  ```
+  # sens-sensor/data tree
+  ├── data
+  │   ├── models
+  │   │   ├── 630k-fusion-best.pt
+  ```
 
 - **Test set** 
   
@@ -26,7 +48,17 @@ In order to reproduce the creation of the models for predicting Pleasantness and
    ``` 
    araus-dataset-baselines-models/code/make_augmented_soundscapes.py
    ```
-   **From ARAUS dataset we are only making use of these 25k augmented soundscapes WAV files and the file ```responses.csv```. The rest of the code or files is not neccessary from now on.**
+   **From ARAUS dataset we are only making use of these 25k augmented soundscapes WAV files and the file ```responses.csv``` from . The rest of the code or files is not neccessary from now on. Locate this files in the following way**
+   ```
+   # sens-sensor/data tree
+    ├── data 
+    │   ├── files
+    │   │   ├── responses.csv
+    │   └── soundscapes_augmented
+    │       ├── fold_0_participant_10001_stimulus_02.wav
+    │       ├── ...
+    │       └── fold_5_participant_00600_stimulus_44.wav
+   ```
 
 2) After some research (see <a href="#references">References section</a>), CLAP embeddings demonstrated strong performance in terms of prediction accuracy and suitability for real-time processing. The steps below determine the guide to obtain the dataset to train the models, which includes the CLAP embeddings for ARAUS augmented audios as well as for Fold-Fs audios too.
    
@@ -34,11 +66,20 @@ In order to reproduce the creation of the models for predicting Pleasantness and
 
    1) Adapt ARAUS original dataset for extension 
         
-        This <a href="development/dataset_Adequate_ARAUS_for_extension.ipynb">script</a> offers a guide of the adaptation needed prior to the CLAP embeddings generation. It recieves as input ```responses.csv``` and outputs ```responses_adapted.csv```.
+        <a href="development/PE_dataset_Adequation.ipynb">PE_dataset_Adequation.ipynb</a> offers a guide of the adaptation needed prior to the CLAP embeddings generation. It recieves as input ```data/files/responses.csv``` (file from ARAUS original dataset) and outputs ```responses_adapted.csv```.
+
+        ``` 
+        # sens-sensor/data tree
+          ├── data 
+          │   ├── files
+          │   │   ├── responses.csv
+          │   │   ├── responses_adapted.csv
+          │   │   └── responses_fold_Fs.csv # Manually generated with new data
+        ```
 
    2) Generate dataset
         
-        This <a href="development/dataset_Generate_features.py">script</a> generates JSON files with the embeddings for the set of audios indicated. 
+        <a href="development/PE_dataset_Generation.py">PE_dataset_Generation.py</a> generates JSON files with the embeddings for the set of audios indicated. 
 
         It must be run in the command line with
         ```
@@ -51,6 +92,41 @@ In order to reproduce the creation of the models for predicting Pleasantness and
         python development/dataset_Generate_features.py --data_path path/to/data/folder --type both
         # for both
         ```
+
+        This will result in the following files, containing the new datasets: CLAP embeddings for each audio + metainformation.
+        ```
+        ├── data
+        │   ├── files
+        │   │   ├── ARAUS_CLAP_dataset
+        │   │   │   ├── ARAUS_CLAP_dataset.csv
+        │   │   │   └── ARAUS_CLAP_dataset.json
+        │   │   ├── fold_Fs_CLAP_dataset
+        │   │   │   ├── fold-Fs_CLAP_dataset.csv
+        │   │   │   └── fold-Fs_CLAP_dataset.json
+        ```
+
+    3) Train model
+   
+        <a href="development/PE_model_Training.py">PE_model_Training.py</a> trains two models for predicting pleasantness and eventfulness, respectively, using RFR algorithm.
+
+        It must be run in the command line with
+
+        ```
+        python development/PE_model_Training.py --data_path data
+        ```
+        This will result in the following files:
+        ```
+        ├── data
+        │   ├── models
+        │   │   ├── model_eventfulness.joblib
+        │   │   ├── model_pleasantness.joblib
+        ```
+
+## USM - SOUND SOURCES PREDICTION
+
+
+
+## US8k - SOUND SOURCES PREDICTION
 
 ## Environment configuration
 
