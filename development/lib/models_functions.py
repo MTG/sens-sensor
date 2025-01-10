@@ -208,7 +208,7 @@ def train_RFR(input_dict):
 
         if input_dict["pca"]:
             # Load the saved PCA model
-            pca = joblib.load("data/models/pca_model.pkl")
+            pca = joblib.load(os.path.join(input_dict["data_path"], "pca_model.pkl"))
 
         for val_fold in [1, 2, 3, 4, 5]:
 
@@ -242,9 +242,7 @@ def train_RFR(input_dict):
             # Get feature matrices
             X_train = df_train[features].values  # [:,0:100]
             X_val = df_val[features].values  # [:,0:100]
-            print("X val shape ", X_val.shape)
             X_test = df_test[features].values  # [:,0:100]
-            print("X test shape ", X_test.shape)
             X_foldFs = df_Fs[features].values  # [:,0:100]
 
             if input_dict["pca"]:
@@ -256,7 +254,9 @@ def train_RFR(input_dict):
 
             # Fit model
             model.fit(X_train, Y_train)
-            print("Model fit done")
+            print(
+                f"Model fit done with n_estimator={n_estimators} and validationo fold={val_fold}"
+            )
 
             # Get MSEs
             MSE_train = np.mean((clip(model.predict(X_train)) - Y_train) ** 2)
