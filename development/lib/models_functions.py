@@ -28,6 +28,7 @@ from sklearn.metrics import (
     precision_score,
 )
 from joblib import dump, load
+import joblib
 
 # Path importing
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -205,6 +206,9 @@ def train_RFR(input_dict):
         MEs_test = []
         MEs_foldFs = []
 
+        # Load the saved PCA model
+        pca = joblib.load("data/models/pca_model.pkl")
+
         for val_fold in [1, 2, 3, 4, 5]:
 
             # Extract dataframes
@@ -213,6 +217,14 @@ def train_RFR(input_dict):
             ]  # For the training set, use all samples that are not in the test set (fold 0) and current validation fold.
             df_val = df[df["info.fold"] == val_fold]
             df_test = df[df["info.fold"] == 0]
+
+            # For fold 0 group data
+            # Drop string columns
+            df_test = df_test.drop("info.file", axis=1)
+            df_test = df_test.drop("info.participant", axis=1)
+            df_test = df_test.groupby(
+                ["info.soundscape", "info.masker", "info.smr"]
+            ).mean()  # .reset_index()  # For the test set, the same 48 stimuli were shown to all participants so we take the mean of their ratings as the ground truth
 
             # Get ground-truth labels
             if input_dict["predict"] == "P":
@@ -229,8 +241,16 @@ def train_RFR(input_dict):
             # Get feature matrices
             X_train = df_train[features].values  # [:,0:100]
             X_val = df_val[features].values  # [:,0:100]
+            print("X val shape ", X_val.shape)
             X_test = df_test[features].values  # [:,0:100]
+            print("X test shape ", X_test.shape)
             X_foldFs = df_Fs[features].values  # [:,0:100]
+
+            # Apply PCA
+            """ X_train = pca.transform(X_train)
+            X_val = pca.transform(X_val)
+            X_test = pca.transform(X_test)
+            X_foldFs = pca.transform(X_foldFs) """
 
             # Fit model
             model.fit(X_train, Y_train)
@@ -511,6 +531,9 @@ def train_US8k_model(
         The function trains the model and saves it to the specified path. It does not return any value.
     """
 
+    # Load the saved PCA model
+    pca = joblib.load("data/models/pca_model.pkl")
+
     txt_name = os.path.join(saving_model_path, one_class + "_model_info.txt")
     with open(txt_name, "a") as f:
         highest_precision_val = 0
@@ -532,6 +555,10 @@ def train_US8k_model(
             # Get feature matrices
             X_train = df_train[clap_features].values
             X_val = df_val[clap_features].values
+
+            # Apply PCA
+            X_train = pca.transform(X_train)
+            X_val = pca.transform(X_val)
 
             # print("X_train ", X_train.shape)
             # print("X_val ", X_val.shape)

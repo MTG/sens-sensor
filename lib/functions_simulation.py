@@ -22,6 +22,9 @@ from maad.util import mean_dB
 from scipy.signal import lfilter
 from scipy.signal.filter_design import bilinear
 from numpy import pi, convolve
+import matplotlib.pyplot as plt
+import pandas as pd
+from download_data import general_plots
 
 # Path importing
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -127,25 +130,26 @@ def sensor_processing(
     saving_folder_path: str,
     gain: float,
     timestamp,
-    action,
+    action: list,
+    seconds_segment,
+    n_segments,
+    model_CLAP_path,
+    models_predictions_path,
+    sources,
     sensor_id="",
     location="",
 ):
-    seconds_segment = pm.segment_length
-    n_segments = pm.n_segments_intg
-    model_CLAP_path = pm.model_CLAP_path
-    models_predictions_path = pm.models_predictions_path
-    sources = pm.sources
 
     # Load models
     model_CLAP, models_predictions = initiate(model_CLAP_path, models_predictions_path)
 
+    # Load audio
     wf = wave.open(audio_file_path, "rb")
     fs = wf.getframerate()
     ch = wf.getnchannels()
     sample_width = wf.getsampwidth()
 
-    print(f"Fs {fs}, ch {ch}, sample width {sample_width}")
+    # print(f"Fs {fs}, ch {ch}, sample width {sample_width}")
 
     segment_samples = seconds_segment * fs
     long_buffer_samples = n_segments * segment_samples
@@ -153,6 +157,40 @@ def sensor_processing(
     # Buffers for accumulating audio data
     short_buffer = np.array([], dtype=np.int16)
     long_buffer = np.array([], dtype=np.int16)
+
+    # Elapsed time
+    elapsed_time = 0
+
+    # Buffers for accumulating predictions
+    if "save" in action:
+        # Define the columns
+        df_columns = [
+            "birds",
+            "construction",
+            "dogs",
+            "human",
+            "music",
+            "nature",
+            "siren",
+            "vehicles",
+            "pleasantness_inst",
+            "pleasantness_intg",
+            "eventfulness_inst",
+            "eventfulness_intg",
+            "leq",
+            "LAeq",
+            "date_time",
+            "elapsed_time",
+        ]
+        # Create an empty DataFrame
+        df = pd.DataFrame(columns=df_columns)
+
+        # Audio name
+        audio_name = (audio_file_path.split("/")[-1]).split(".wav")[0]
+        audio_folder = audio_file_path.split("/")[-2]
+
+        # Declare folder where to save plots and predictions
+        saving_folder_audio_path = os.path.join(saving_folder_path, audio_name)
 
     # Read and process the audio stream
     try:
@@ -172,7 +210,7 @@ def sensor_processing(
             audio_samples = audio_samples / (2**15 - 1)  # 16bit convert to wav [-1,1]
 
             # Accumulate the audio samples in both buffers
-            short_buffer = audio_samples * gain / 6.44  # apply gain
+            short_buffer = audio_samples  # * gain / 6.44  # apply gain
             long_buffer = np.concatenate((long_buffer, audio_samples))
             if len(long_buffer) > long_buffer_samples:
                 long_buffer = long_buffer[
@@ -188,7 +226,7 @@ def sensor_processing(
             )
             # finish_time = time.time()
 
-            # Calculate probabilities for each source model INSTANTANEOUS
+            # Calculate probabilities, if model was not inputted, then put 0 in corresponding gap
             predictions = []
             all_predictions = [
                 "birds",
@@ -245,28 +283,41 @@ def sensor_processing(
             output_line = (
                 f"{prediction_str};{Leq_calc_str};{LAeq};{timestamp.isoformat()}"
             )
-            print(output_line)
+            # print(output_line)
 
             # SAVE ALL predictions vector in file
-            if action == "save":
-                # Create folder to save predictions. Check if folder exists, and if not, create it
-                if not os.path.exists(saving_folder_path):
-                    os.makedirs(saving_folder_path)
-                    print(f"Folder created: {saving_folder_path}")
+            if "save" in action:
+                # Create folder to save. Check if folder exists, and if not, create it
+                if not os.path.exists(saving_folder_audio_path):
+                    os.makedirs(saving_folder_audio_path)
+                    print(f"Folder created: {saving_folder_audio_path}")
+
+                ## Save predictions in single txt file
                 file_name = (
                     "predictions_" + timestamp.strftime("%Y%m%d_%H%M%S") + ".txt"
                 )
-                txt_file_path = os.path.join(saving_folder_path, file_name)
+                txt_file_path = os.path.join(saving_folder_audio_path, file_name)
                 with open(txt_file_path, "w") as file:
                     file.write(output_line)
                 print(f"Prediction saved to {txt_file_path}")
+
+                ## Save data in new row in dataframe (dataframe is saved when completed)
+                values = output_line.split(";")
+                # Convert values to float, except the last value (datetime string)
+                float_values = [
+                    float(value) for value in values[:-1]
+                ]  # Convert all but the last one to float
+                # Combine converted values
+                final_values = float_values + [values[-1]] + [elapsed_time]
+                # Append the values as a new row to the DataFrame
+                df.loc[len(df)] = final_values
 
             # SEND TO SERVER
             if action == "send":
                 response = send_to_server(
                     output_line, sensor_id=sensor_id, location=location
                 )
-                if response != True:
+                """ if response != True:
                     # Prediction was not sent - SAVE IT
                     # Create folder to save predictions. Check if folder exists, and if not, create it
                     if not os.path.exists(saving_folder_path):
@@ -277,10 +328,170 @@ def sensor_processing(
                     )
                     txt_file_path = os.path.join(saving_folder_path, file_name)
                     with open(txt_file_path, "w") as file:
-                        file.write(output_line)
+                        file.write(output_line) """
 
             # Prepare timestamp for next iteration
             timestamp = timestamp + datetime.timedelta(seconds=seconds_segment)
+            elapsed_time = elapsed_time + seconds_segment
+
+        # Save plots and dataframe
+        if "save" in action:
+
+            # Generate and save plots
+            config = {
+                "pleasantness_inst": {
+                    "threshold": 0,
+                    "color-line": "#111111",
+                },
+                "pleasantness_intg": {
+                    "threshold": 0,
+                    "color-line": "#111111",
+                },
+                "eventfulness_inst": {
+                    "threshold": 0,
+                    "color-line": "#111111",
+                },
+                "eventfulness_intg": {
+                    "threshold": 0,
+                    "color-line": "#111111",
+                },
+                "leq": {
+                    "threshold": 90,
+                    "color-line": "#111111",
+                },
+                "LAeq": {
+                    "threshold": 65,
+                    "color-line": "#111111",
+                },
+                "birds": {
+                    "threshold": 0.5,
+                    "color": "#8F7E8A",
+                    "color-line": "#111111",
+                },
+                "construction": {
+                    "threshold": 0.5,
+                    "color": "#EE9E2E",
+                    "color-line": "#111111",
+                },
+                "dogs": {
+                    "threshold": 0.5,
+                    "color": "#84B66F",
+                    "color-line": "#111111",
+                },
+                "human": {
+                    "threshold": 0.5,
+                    "color": "#FABA32",
+                    "color-line": "#111111",
+                },
+                "music": {
+                    "threshold": 0.5,
+                    "color": "#0DB2AC",
+                    "color-line": "#111111",
+                },
+                "nature": {
+                    "threshold": 0.5,
+                    "color": "#A26294",
+                    "color-line": "#111111",
+                },
+                "siren": {
+                    "threshold": 0.5,
+                    "color": "#FC694D",
+                    "color-line": "#111111",
+                },
+                "vehicles": {
+                    "threshold": 0.8,
+                    "color": "#CF6671",
+                    "color-line": "#111111",
+                },
+            }
+            config_processed = {
+                "pleasantness_inst": {
+                    "threshold": 0,
+                    "color-line": "#000000",
+                },
+                "pleasantness_intg": {
+                    "threshold": 0,
+                    "color-line": "#000000",
+                },
+                "eventfulness_inst": {
+                    "threshold": 0,
+                    "color-line": "#000000",
+                },
+                "eventfulness_intg": {
+                    "threshold": 0,
+                    "color-line": "#000000",
+                },
+                "leq": {
+                    "threshold": 90,
+                    "color-line": "#000000",
+                },
+                "LAeq": {
+                    "threshold": 65,
+                    "color-line": "#000000",
+                },
+                "birds": {
+                    "threshold": 0.5,
+                    "color": "#8F7E8A",
+                    "color-line": "#8F7E8A",
+                },
+                "construction": {
+                    "threshold": 0.5,
+                    "color": "#EE9E2E",
+                    "color-line": "#EE9E2E",
+                },
+                "dogs": {
+                    "threshold": 0.5,
+                    "color": "#84B66F",
+                    "color-line": "#84B66F",
+                },
+                "human": {
+                    "threshold": 0.5,
+                    "color": "#FABA32",
+                    "color-line": "#FABA32",
+                },
+                "music": {
+                    "threshold": 0.5,
+                    "color": "#0DB2AC",
+                    "color-line": "#0DB2AC",
+                },
+                "nature": {
+                    "threshold": 0.5,
+                    "color": "#A26294",
+                    "color-line": "#A26294",
+                },
+                "siren": {
+                    "threshold": 0.5,
+                    "color": "#FC694D",
+                    "color-line": "#FC694D",
+                },
+                "vehicles": {
+                    "threshold": 0.8,
+                    "color": "#CF6671",
+                    "color-line": "#CF6671",
+                },
+            }
+
+            fontsizes = {
+                "title": 20,
+                "legend": 14,
+                "label": 14,
+                "axis": 12,
+                "box": 14,
+                "percentage": 20,
+            }
+
+            general_plots(
+                df=df,
+                saving_path=saving_folder_audio_path,
+                start_str="",
+                end_str="",
+                config=config,
+                fontsizes=fontsizes,
+            )
+
+            # Save dataframe with all information
+            df.to_csv(os.path.join(saving_folder_audio_path, "data.csv"), index=False)
+            print(f"DataFrame saved.")
 
     except KeyboardInterrupt:
         print("Processing interrupted.")

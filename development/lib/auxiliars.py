@@ -594,6 +594,34 @@ USM_sources = [
 ]
 
 USM_sound_assigns = {
+    "airplane": "",
+    "alarm": "siren",
+    "birds": "birds",
+    "bus": "vehicles",
+    "car": "vehicles",
+    "cheering": "human",
+    "church bell": "",
+    "dogs": "dogs",
+    "drilling": "construction",
+    "glass break": "construction",
+    "gunshot": "",
+    "hammer": "construction",
+    "helicopter": "",
+    "jackhammer": "construction",
+    "lawn mower": "construction",
+    "motorcycle": "vehicles",
+    "music": "music",
+    "rain": "nature",
+    "sawing": "construction",
+    "scream": "human",
+    "siren": "siren",
+    "speech": "human",
+    "thunderstorm": "nature",
+    "train": "",
+    "truck": "vehicles",
+    "wind": "nature",
+}
+""" USM_sound_assigns = {
     "airplane": "vehicles",
     "alarm": "siren",
     "birds": "birds",
@@ -620,7 +648,7 @@ USM_sound_assigns = {
     "train": "vehicles",
     "truck": "vehicles",
     "wind": "nature",
-}
+} """
 
 sources = [
     "birds",
