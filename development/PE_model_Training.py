@@ -19,7 +19,7 @@ print("src dir ", src_dir)
 sys.path.append(src_dir)
 
 # Imports from this project
-from development.lib.models_functions import train_RFR
+from development.lib.models_functions import train_PE
 from development.lib.auxiliars import (
     clap_features,
 )
@@ -31,9 +31,9 @@ def main(data_path):
         data_path, "files/ARAUS_CLAP_dataset/ARAUS_CLAP_dataset.csv"
     )
     data_foldFs_path = os.path.join(
-        data_path, "files/fold_Fs_CLAP_dataset/fold-Fs_CLAP_dataset.csv"
+        data_path, "files/fold_Fs_CLAP_dataset/fold_Fs_CLAP_dataset.csv"
     )
-    saving_folder = os.path.join(data_path, "models/")
+    saving_folder = os.path.join(data_path, "models/PE")
 
     ############# RUN ###################################################################
     # MODEL FOR PLEASANTNESS PREDICTION
@@ -42,22 +42,26 @@ def main(data_path):
         "test_dataset_path": data_foldFs_path,
         "features": clap_features,
         "predict": "P",
-        "params": [250],
+        "params": [30],
         "saving_folder_path": saving_folder,
         "model_name": "model_pleasantness",
+        "model": "RFR",
+        "pca": True,
     }
-    train_RFR(input_dict)
+    train_PE(input_dict)
     # MODEL FOR EVENTFULNESS PREDICTION
     input_dict = {
         "train_dataset_path": dataset_path,
         "test_dataset_path": data_foldFs_path,
         "features": clap_features,
         "predict": "E",
-        "params": [500],
+        "params": [30],
         "saving_folder_path": saving_folder,
         "model_name": "model_eventfulness",
+        "model": "RFR",
+        "pca": True,
     }
-    train_RFR(input_dict)
+    train_PE(input_dict)
     #####################################################################################
 
 

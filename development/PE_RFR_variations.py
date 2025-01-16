@@ -10,7 +10,7 @@ print("src dir ", src_dir)
 sys.path.append(src_dir)
 
 # Imports from this project
-from development.lib.models_functions import train_RFR
+from development.lib.models_functions import train_PE
 from development.lib.auxiliars import (
     clap_features,
 )
@@ -19,14 +19,16 @@ from development.lib.auxiliars import (
 def main(data_path):
 
     dataset_path = os.path.join(
-        data_path, "ARAUS_CLAP_dataset.csv"  # files/ARAUS_CLAP_dataset/
+        data_path,
+        "files/ARAUS_CLAP_dataset/ARAUS_CLAP_dataset.csv",  # files/ARAUS_CLAP_dataset/
     )
     data_foldFs_path = os.path.join(
-        data_path, "fold_Fs_CLAP_dataset.csv"  # files/fold_Fs_CLAP_dataset/
+        data_path,
+        "files/fold_Fs_CLAP_dataset/fold_Fs_CLAP_dataset.csv",  # files/fold_Fs_CLAP_dataset/
     )
-    saving_folder = os.path.join(data_path, "models_variations")
+    saving_folder = os.path.join(data_path, "models_variations_KNN")
 
-    estimators = [5, 10, 20, 30, 50, 100, 150, 200, 250, 300]
+    estimators = [2, 5, 7, 10, 15, 20, 30, 50, 100, 150, 200]
     for estimator in estimators:
 
         ############# RUN ###################################################################
@@ -40,9 +42,10 @@ def main(data_path):
             "saving_folder_path": saving_folder,
             "model_name": "model_pleasantness_pca_" + str(estimator),
             "pca": True,
+            "model": "KNN",
             "data_path": data_path,
         }
-        train_RFR(input_dict)
+        train_PE(input_dict)
         # MODEL FOR EVENTFULNESS PREDICTION  - WITH PCA
         input_dict = {
             "train_dataset_path": dataset_path,
@@ -53,9 +56,10 @@ def main(data_path):
             "saving_folder_path": saving_folder,
             "model_name": "model_eventfulness_pca_" + str(estimator),
             "pca": True,
+            "model": "KNN",
             "data_path": data_path,
         }
-        train_RFR(input_dict)
+        train_PE(input_dict)
         # MODEL FOR PLEASANTNESS PREDICTION - No PCA
         input_dict = {
             "train_dataset_path": dataset_path,
@@ -66,9 +70,10 @@ def main(data_path):
             "saving_folder_path": saving_folder,
             "model_name": "model_pleasantness_" + str(estimator),
             "pca": False,
+            "model": "KNN",
             "data_path": data_path,
         }
-        train_RFR(input_dict)
+        train_PE(input_dict)
         # MODEL FOR EVENTFULNESS PREDICTION  - No PCA
         input_dict = {
             "train_dataset_path": dataset_path,
@@ -79,9 +84,10 @@ def main(data_path):
             "saving_folder_path": saving_folder,
             "model_name": "model_eventfulness_" + str(estimator),
             "pca": False,
+            "model": "KNN",
             "data_path": data_path,
         }
-        train_RFR(input_dict)
+        train_PE(input_dict)
         #####################################################################################
 
 

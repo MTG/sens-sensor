@@ -18,6 +18,8 @@ import sys
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import ElasticNet
+from sklearn.neighbors import KNeighborsRegressor
 from sklearn.exceptions import ConvergenceWarning
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.exceptions import ConvergenceWarning
@@ -140,7 +142,7 @@ def test_model(model_path: str, config_file_path: str, df: pd.DataFrame):
     print(f"|  {MSE_test:.4f} |   {MAE_test:.4f}  |")
 
 
-def train_RFR(input_dict):
+def train_PE(input_dict):
     """Function to train Random Forest Regressor model with speficied parameters and input data"""
 
     # Load dataframes from file paths
@@ -183,11 +185,6 @@ def train_RFR(input_dict):
             "-----+--------+--------+--------+--------+--------+--------+--------+----------"
         )
         f.write("\n")
-        # Get parameter
-        n_estimators = input_dict["params"][0]
-
-        f.write(f"Number of estimators {n_estimators}")
-        f.write("\n")
         f.flush()
 
         # Auxiliary variables to save once best model is chosen
@@ -195,7 +192,20 @@ def train_RFR(input_dict):
         val_fold_chosen = 0
         features = input_dict["features"]
 
-        model = RandomForestRegressor(n_estimators=n_estimators, random_state=0)
+        if input_dict["model"] == "RFR":
+            model = RandomForestRegressor(
+                n_estimators=input_dict["params"][0], random_state=0
+            )
+        if input_dict["model"] == "KNN":
+            model = KNeighborsRegressor(n_neighbors=input_dict["params"][0])
+
+        if input_dict["model"] == "EN":
+            model = ElasticNet(
+                alpha=input_dict["params"][0],
+                l1_ratio=input_dict["params"][1],
+                selection="random",
+                random_state=0,
+            )
 
         MSEs_train = []
         MSEs_val = []
@@ -208,7 +218,9 @@ def train_RFR(input_dict):
 
         if input_dict["pca"]:
             # Load the saved PCA model
-            pca = joblib.load(os.path.join(input_dict["data_path"], "pca_model.pkl"))
+            pca = joblib.load(
+                os.path.join(input_dict["data_path"], "models/pca_model.pkl")
+            )
 
         for val_fold in [1, 2, 3, 4, 5]:
 
@@ -254,9 +266,7 @@ def train_RFR(input_dict):
 
             # Fit model
             model.fit(X_train, Y_train)
-            print(
-                f"Model fit done with n_estimator={n_estimators} and validationo fold={val_fold}"
-            )
+            print(f"Model fit done with validationo fold={val_fold}")
 
             # Get MSEs
             MSE_train = np.mean((clip(model.predict(X_train)) - Y_train) ** 2)
@@ -303,7 +313,11 @@ def train_RFR(input_dict):
             "-----+--------+--------+--------+--------+--------+--------+--------+----------"
         )
         f.write("\n")
-        f.write(f"N_estimators {n_estimators}, best validation fold {val_fold_chosen}")
+        f.write(f"Model {input_dict['model']}")
+        f.write("\n")
+        f.write(f"Parameters {input_dict['params']}")
+        f.write("\n")
+        f.write(f"Best validation fold {val_fold_chosen}")
         f.write("\n")
         f.flush()
 
@@ -385,8 +399,11 @@ def train_USM_model(
     - None:
         The function trains the model and saves it to the specified path. It does not return any value.
     """
+    # Load the saved PCA model
+    pca = joblib.load("data/models/pca_model.pkl")
 
     txt_name = os.path.join(saving_model_path, one_class + "_model_info.txt")
+
     with open(txt_name, "a") as f:
 
         # Extract dataframes
@@ -406,9 +423,17 @@ def train_USM_model(
         X_train = df_train[clap_features].values
         X_val = df_val[clap_features].values
         X_eval = df_eval[clap_features].values
-        # print("X_train ", X_train.shape)
-        # print("X_val ", X_val.shape)
-        # print("X_eval ", X_eval.shape)
+        print("X_train ", X_train.shape)
+        print("X_val ", X_val.shape)
+        print("X_eval ", X_eval.shape)
+
+        # Apply pca
+        X_train = pca.transform(X_train)
+        X_val = pca.transform(X_val)
+        X_eval = pca.transform(X_eval)
+        print("X_train ", X_train.shape)
+        print("X_val ", X_val.shape)
+        print("X_eval ", X_eval.shape)
 
         # Initialize the classifier
         if model_choice == "l_r":

@@ -38,7 +38,7 @@ def main(data_path):
         "siren": "linear",
         "street_music": "linear",
         "construction": "linear",
-    }  # list of best performing algorithms for each source_USM (same order as sources list)
+    }  # "vehicles_IDMT": "linear",
     saving_path = os.path.join(
         data_path, "models/sources_US8k"
     )  # path to folder where to save the models

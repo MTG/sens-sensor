@@ -675,5 +675,5 @@ def main_get_data(csv_file):
             json.dump(data_dict, json_file, indent=4)
 
 
-csv_file = "data/recording_points.csv"
-main_get_data(csv_file)
+# csv_file = "data/recording_points.csv"
+# main_get_data(csv_file)
