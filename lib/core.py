@@ -26,6 +26,7 @@ def sensor_work():
     saving_path = pm.predictions_folder_path
     models_predictions_path = pm.models_predictions_path
     model_CLAP_path = pm.model_CLAP_path
+    pca_path = pm.pca_path
     audios_folder_path = pm.audios_folder_path
     n_segments = pm.n_segments_intg
 
@@ -40,7 +41,9 @@ def sensor_work():
         print(f"Folder created: {saving_path}")
 
     # Load models
-    model_CLAP, models_predictions = initiate(model_CLAP_path, models_predictions_path)
+    model_CLAP, models_predictions, pca = initiate(
+        model_CLAP_path, models_predictions_path, pca_path
+    )
 
     # Announce that models are loaded
     i = 0
@@ -76,17 +79,20 @@ def sensor_work():
                 if "P" in models_predictions_path or "E" in models_predictions_path:
                     number_files = len(files_path)
                     if number_files >= n_segments:
-                        files_path = files_path[(number_files - n_segments) : number_files]
+                        files_path = files_path[
+                            (number_files - n_segments) : number_files
+                        ]
 
                 turn_leds_on(GPIO, led_pins)  # Turn on LEDs
                 # time.sleep(0.2)  # FIXME to make sure there is content !!!!!! PUT BACK???
 
-                # Perform prediction 
+                # Perform prediction
                 perform_prediction(
                     file_path=single_file_path,
                     files_path=files_path,
                     model_CLAP=model_CLAP,
                     models_predictions=models_predictions,
+                    pca=pca,
                 )
                 prev_file = single_file_path
 

@@ -46,6 +46,9 @@ models_predictions_path = {
 # CLAP MODEL
 model_CLAP_path = "data/models/630k-fusion-best_audio_only.pt"
 
+# PCA
+pca_path = "data/models/pca_model.pkl"
+
 # TEMPORARY AUDIOS FOLDER
 audios_folder_path = "../temporary_audios"
 

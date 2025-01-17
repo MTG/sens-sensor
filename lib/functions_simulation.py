@@ -24,6 +24,7 @@ from scipy.signal.filter_design import bilinear
 from numpy import pi, convolve
 import matplotlib.pyplot as plt
 import pandas as pd
+import json
 from download_data import general_plots
 
 # Path importing
@@ -125,6 +126,21 @@ def calculate_LAeq(audio_samples, fs=48000):
     return LAeq_str
 
 
+def extract_and_flatten_values(data):
+    values = []
+    if isinstance(data, dict):
+        for key, value in data.items():
+            if key == "datetime":
+                continue  # Skip the "datetime" key
+            values.extend(extract_and_flatten_values(value))
+    elif isinstance(data, list):
+        for item in data:
+            values.extend(extract_and_flatten_values(item))
+    else:
+        values.append(float(data))
+    return values
+
+
 def sensor_processing(
     audio_file_path: str,
     saving_folder_path: str,
@@ -135,13 +151,16 @@ def sensor_processing(
     n_segments,
     model_CLAP_path,
     models_predictions_path,
+    pca_path,
     sources,
     sensor_id="",
     location="",
 ):
 
     # Load models
-    model_CLAP, models_predictions = initiate(model_CLAP_path, models_predictions_path)
+    model_CLAP, models_predictions, pca = initiate(
+        model_CLAP_path, models_predictions_path, pca_path
+    )
 
     # Load audio
     wf = wave.open(audio_file_path, "rb")
@@ -227,7 +246,42 @@ def sensor_processing(
             # finish_time = time.time()
 
             # Calculate probabilities, if model was not inputted, then put 0 in corresponding gap
-            predictions = []
+            predictions = {}
+            for model in models_predictions:
+                if model != "P" and model != "E":
+                    # Model is a source type
+                    # Check if "sources" exists in predictions; if not, initialize it as an empty dictionary
+                    if "sources" not in predictions:
+                        predictions["sources"] = {}
+                    predicted_value = models_predictions[model].predict_proba(
+                        features_segment
+                    )[0][1]
+                    predictions["sources"][model] = predicted_value
+
+                else:
+                    # Model is P or E
+                    predictions[str(model + "_inst")] = models_predictions[
+                        model
+                    ].predict(features_segment)[0]
+                    predictions[str(model + "_intg")] = models_predictions[
+                        model
+                    ].predict(features_intg)[0]
+
+            # Calculate Leq
+            short_buffer = short_buffer
+            Leq_calc = mean_dB(pressure2leq(short_buffer * 1.5, 48000))
+            predictions["leq"] = Leq_calc
+
+            # Calculate LAeq
+            LAeq = calculate_LAeq(short_buffer * 6.44, fs=48000)
+            predictions["LAeq"] = LAeq
+
+            # Add datetime
+            predictions["datetime"] = timestamp.isoformat()
+
+            # Save for dataframe
+
+            """ predictions = []
             all_predictions = [
                 "birds",
                 "construction",
@@ -282,7 +336,7 @@ def sensor_processing(
             # Add Leq and the timestamp
             output_line = (
                 f"{prediction_str};{Leq_calc_str};{LAeq};{timestamp.isoformat()}"
-            )
+            ) """
             # print(output_line)
 
             # SAVE ALL predictions vector in file
@@ -294,28 +348,33 @@ def sensor_processing(
 
                 ## Save predictions in single txt file
                 file_name = (
-                    "predictions_" + timestamp.strftime("%Y%m%d_%H%M%S") + ".txt"
+                    "predictions_" + timestamp.strftime("%Y%m%d_%H%M%S") + ".json"
                 )
                 txt_file_path = os.path.join(saving_folder_audio_path, file_name)
+                """ with open(txt_file_path, "w") as file:
+                    file.write(output_line) """
                 with open(txt_file_path, "w") as file:
-                    file.write(output_line)
+                    json.dump(predictions, file, indent=4)
                 print(f"Prediction saved to {txt_file_path}")
 
                 ## Save data in new row in dataframe (dataframe is saved when completed)
-                values = output_line.split(";")
+                # values = output_line.split(";")
                 # Convert values to float, except the last value (datetime string)
-                float_values = [
-                    float(value) for value in values[:-1]
-                ]  # Convert all but the last one to float
+                # float_values = [float(value) for value in values[:-1]]  # Convert all but the last one to float
                 # Combine converted values
-                final_values = float_values + [values[-1]] + [elapsed_time]
+                # Extract all values except the one in the "datetime" key
+                float_values = extract_and_flatten_values(predictions)
+                final_values = float_values + [predictions["datetime"]] + [elapsed_time]
                 # Append the values as a new row to the DataFrame
                 df.loc[len(df)] = final_values
 
             # SEND TO SERVER
             if action == "send":
-                response = send_to_server(
-                    output_line, sensor_id=sensor_id, location=location
+                # response = send_to_server(output_line, sensor_id=sensor_id, location=location)
+                response = client.post_sensor_data(
+                    data=predictions,
+                    sensor_timestamp=predictions["datetime"],
+                    save_to_disk=False,
                 )
                 """ if response != True:
                     # Prediction was not sent - SAVE IT

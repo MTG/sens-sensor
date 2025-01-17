@@ -81,6 +81,7 @@ def perform_prediction(
     files_path,
     model_CLAP,
     models_predictions,
+    pca,
 ):
     start_pred_time = time.time()
     # Get parameters needed
@@ -103,6 +104,8 @@ def perform_prediction(
     features_single = model_CLAP.get_audio_embedding_from_data(
         [file_data], use_tensor=False
     )
+    # Apply PCA
+    features_single = pca.transform(features_single)
 
     # GROUP OF FILES ANALYSIS (INTEGRATED)
     if "P" in models_predictions or "E" in models_predictions:
@@ -124,8 +127,49 @@ def perform_prediction(
         features_group = model_CLAP.get_audio_embedding_from_data(
             [joined_audio], use_tensor=False
         )
+        # Apply PCA
+        features_group = pca.transform(features_group)
 
     # PREDICTIONS
+    predictions = {}
+    for model in models_predictions:
+        if model == "P" or model == "E":
+            # Model is P or E
+            predictions[str(model + "_inst")] = models_predictions[model].predict(
+                features_single
+            )[0]
+            predictions[str(model + "_intg")] = models_predictions[model].predict(
+                features_group
+            )[0]
+        else:
+            # Model is a source type
+            # Check if "sources" exists in predictions; if not, initialize it as an empty dictionary
+            if "sources" not in predictions:
+                predictions["sources"] = {}
+            predictions["sources"][model] = models_predictions[model].predict_proba(
+                features_single
+            )[0][1]
+
+    # Complete dictionary with Leq, LAeq, datetime
+    tzinfo = zoneinfo.ZoneInfo(time.tzname[0])
+    current_timestamp = datetime.datetime.now(tzinfo).replace(microsecond=0)
+    measure_timestamp = extract_timestamp(file_name=txt_file_name)
+    predictions["leq"] = Leq
+    predictions["LAeq"] = LAeq
+    predictions["datetime"] = measure_timestamp.isoformat()
+
+    # Save predictions to a JSON file
+    file_name = "predictions_" + measure_timestamp.strftime("%Y%m%d_%H%M%S") + ".json"
+    txt_file_path = os.path.join(saving_folder_path, file_name)
+    with open(txt_file_path, "w") as file:
+        json.dump(predictions, file, indent=4)
+    end_pred_time = time.time()
+    print(
+        f"Predictions added to local json file, time diff {(current_timestamp-measure_timestamp).total_seconds()} seconds"
+    )
+    print(f"Prediction took {(end_pred_time-start_pred_time)} seconds")
+
+    """ # PREDICTIONS
     all_predictions = [
         "birds",
         "construction",
@@ -180,10 +224,10 @@ def perform_prediction(
     print(
         f"Predictions added to local txt file, time diff {(current_timestamp-measure_timestamp).total_seconds()} seconds"
     )
-    print(f"Prediction took {(end_pred_time-start_pred_time)} seconds")
+    print(f"Prediction took {(end_pred_time-start_pred_time)} seconds") """
 
 
-def initiate(model_CLAP_path, models_predictions_path):
+def initiate(model_CLAP_path, models_predictions_path, pca_path):
     # region MODEL LOADING #######################
     # Load the CLAP model to generate features
     code_starts = time.time()
@@ -206,6 +250,9 @@ def initiate(model_CLAP_path, models_predictions_path):
         models_predictions[model] = joblib.load(models_predictions_path[model])
     print("------- prediction models loaded -----------")
 
+    # Load PCA component
+    pca = joblib.load("data/models/pca_model.pkl")
+
     loaded_end = time.time()
     print(
         "#############################################################################"
@@ -220,4 +267,4 @@ def initiate(model_CLAP_path, models_predictions_path):
     )
     # endregion MODEL LOADING ####################
 
-    return model_CLAP, models_predictions
+    return model_CLAP, models_predictions, pca

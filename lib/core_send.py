@@ -6,6 +6,7 @@ import datetime
 import RPi.GPIO as GPIO
 import sys
 import shutil
+import json
 
 
 # Path importing
@@ -135,7 +136,7 @@ def send_server():
     try:
         while True:
             # Get latest file
-            file_pattern = "*.txt"
+            file_pattern = "*.json"  # file_pattern = "*.txt"
             files = glob.glob(os.path.join(folder_path, file_pattern))
             if len(files) != 0:
                 # There are files!
@@ -147,9 +148,9 @@ def send_server():
                         # File has content
                         # Read and send content
                         with open(single_file, "r") as file:
-                            content = file.read()
+                            content = json.load(single_file)  # content = file.read()
 
-                        # Split data string into individual values
+                        """ # Split data string into individual values
                         values = content.split(";")
 
                         # Create dictionary for "sources" and the rest of the keys
@@ -164,7 +165,7 @@ def send_server():
                             "datetime": values[14],
                         }
                         # content["datetime"]=content["datetime"].split("\n")[0]
-                        print("content json ", content)
+                        print("content json ", content) """
                         response = client.post_sensor_data(
                             data=content,
                             sensor_timestamp=content["datetime"],
@@ -220,7 +221,7 @@ def send_library():
     try:
         while True:
             # Get latest file
-            file_pattern = "*.txt"
+            file_pattern = "*.json"
             files = glob.glob(os.path.join(predictions_folder_path, file_pattern))
             if len(files) != 0:
                 # There are files!
@@ -233,7 +234,9 @@ def send_library():
                     with open(single_file, "r") as file:
                         content = file.read()
 
-                    content_screen=content+";"+str(pm.human_th)
+                    # content_screen = content + ";" + str(pm.human_th)
+                    content_screen = content
+                    content_screen["human_threshold"] = pm.human_th
 
                     # Check connection
                     turn_leds_on(GPIO, led_pins)  # Turn on LEDs
@@ -241,12 +244,11 @@ def send_library():
                         sock.sendall(content_screen.encode("utf-8"))
                     except BrokenPipeError:
                         print("Broken pipe error: Socket is no longer available.")
-                        sock=connect_to_server(ip,port)
+                        sock = connect_to_server(ip, port)
                         sock.sendall(content_screen.encode("utf-8"))
                         print(f"Sent to screen {single_file}")
                     except Exception as e:
                         print(f"An unexpected error occurred: {e}")
-
 
                     # Move to another folder
                     """ destination_path = (
@@ -268,58 +270,61 @@ def send_library():
                         ) """
 
                     # Send to server
-                    # Split data string into individual values
+                    """ # Split data string into individual values
                     values = content.split(";")
-
 
                     # Create dictionary for "sources" and the rest of the keys
                     content = {
-                            "sources": dict(zip(pm.sources, values[:8])),
-                            "pleasantness_inst": values[8],
-                            "pleasantness_intg": values[9],
-                            "eventfulness_inst": values[10],
-                            "eventfulness_intg": values[11],
-                            "leq": values[12],
-                            "LAeq": values[13],
-                            "datetime": values[14],
-                        }
+                        "sources": dict(zip(pm.sources, values[:8])),
+                        "pleasantness_inst": values[8],
+                        "pleasantness_intg": values[9],
+                        "eventfulness_inst": values[10],
+                        "eventfulness_intg": values[11],
+                        "leq": values[12],
+                        "LAeq": values[13],
+                        "datetime": values[14],
+                    } """
                     # content["datetime"]=content["datetime"].split("\n")[0]
                     response = client.post_sensor_data(
-                            data=content,
-                            sensor_timestamp=content["datetime"],
-                            save_to_disk=False,
-                        )
-                    
+                        data=content,
+                        sensor_timestamp=content["datetime"],
+                        save_to_disk=False,
+                    )
+
                     if response != False:  # Connection is good
-                            if response.ok == True:  # File sent
-                                print(f"Prediction sent - {single_file}")
-                                # Proceed to delete sent file
-                                os.remove(single_file)
-                                print(f"Deleted.")
-                                turn_leds_on(GPIO, led_pins)  # Turn on LEDs
-                            else: # File NOT sent
-                                print(
-                                    f"File {single_file} could not be sent. Server response: {response}"
-                                )
-                            
-                                turn_leds_off(GPIO, led_pins)
+                        if response.ok == True:  # File sent
+                            print(f"Prediction sent - {single_file}")
+                            # Proceed to delete sent file
+                            os.remove(single_file)
+                            print(f"Deleted.")
+                            turn_leds_on(GPIO, led_pins)  # Turn on LEDs
+                        else:  # File NOT sent
+                            print(
+                                f"File {single_file} could not be sent. Server response: {response}"
+                            )
 
-                                # Move file to not sent
-                                destination_path = (
-                                    not_sent_predictions_folder_path
-                                    + single_file.split(predictions_folder_path)[-1]
-                                )
-                                try:
-                                    if not os.path.exists(not_sent_predictions_folder_path):
-                                        os.makedirs(not_sent_predictions_folder_path)
-                                        print(f"Folder created: {not_sent_predictions_folder_path}")
+                            turn_leds_off(GPIO, led_pins)
 
-                                    shutil.move(single_file, destination_path)
-                                    print(f"File moved from {single_file} to {destination_path}")
-                                except Exception as e:
+                            # Move file to not sent
+                            destination_path = (
+                                not_sent_predictions_folder_path
+                                + single_file.split(predictions_folder_path)[-1]
+                            )
+                            try:
+                                if not os.path.exists(not_sent_predictions_folder_path):
+                                    os.makedirs(not_sent_predictions_folder_path)
                                     print(
-                                        f"An error occurred in moving file to another folder: {e}"
+                                        f"Folder created: {not_sent_predictions_folder_path}"
                                     )
+
+                                shutil.move(single_file, destination_path)
+                                print(
+                                    f"File moved from {single_file} to {destination_path}"
+                                )
+                            except Exception as e:
+                                print(
+                                    f"An error occurred in moving file to another folder: {e}"
+                                )
                     else:
                         print("No connection.")
                         # Move file to not sent
@@ -330,10 +335,14 @@ def send_library():
                         try:
                             if not os.path.exists(not_sent_predictions_folder_path):
                                 os.makedirs(not_sent_predictions_folder_path)
-                                print(f"Folder created: {not_sent_predictions_folder_path}")
+                                print(
+                                    f"Folder created: {not_sent_predictions_folder_path}"
+                                )
 
                             shutil.move(single_file, destination_path)
-                            print(f"File moved from {single_file} to {destination_path}")
+                            print(
+                                f"File moved from {single_file} to {destination_path}"
+                            )
                         except Exception as e:
                             print(
                                 f"An error occurred in moving file to another folder: {e}"
