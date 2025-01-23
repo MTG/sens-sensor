@@ -74,7 +74,7 @@ def send_server():
                         # File has content
                         # Read and send content
                         with open(single_file, "r") as file:
-                            content = json.load(single_file)
+                            content = json.load(file)
 
                         # Sensor status
                         if counter_status == 0:
