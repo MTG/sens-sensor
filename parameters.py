@@ -17,20 +17,8 @@ sources = [
     "siren",
     "vehicles",
 ]
-""" models_predictions_path = {
-    "birds": "data/models/sources/birds.joblib",
-    "construction": "data/models/sources/construction.joblib",
-    "dogs": "data/models/sources/dogs.joblib",
-    "human": "data/models/sources/human.joblib",
-    "music": "data/models/sources/music.joblib",
-    "nature": "data/models/sources/nature.joblib",
-    "siren": "data/models/sources/siren.joblib",
-    "vehicles": "data/models/sources/vehicles.joblib",
-    "P": "data/models/model_pleasantness.joblib",
-    "E": "data/models/model_eventfulness.joblib",
-} """
-models_predictions_path = {
-    "birds": "data/models/sources_USM_pca/birds.joblib",
+
+""""birds": "data/models/sources_USM_pca/birds.joblib",
     "construction": "data/models/sources_USM_pca/construction.joblib",
     "dogs": "data/models/sources_USM_pca/dogs.joblib",
     "human": "data/models/sources_USM_pca/human.joblib",
@@ -39,7 +27,19 @@ models_predictions_path = {
     "siren": "data/models/sources_USM_pca/siren.joblib",
     "vehicles": "data/models/sources_IDMT-US8k_pca/vehicles_IDMT.joblib",
     "P": "data/models/models_variations_KNN/model_pleasantness_pca_30.joblib",
-    "E": "data/models/models_variations_KNN/model_eventfulness_pca_30.joblib",
+    "E": "data/models/models_variations_KNN/model_eventfulness_pca_30.joblib","""
+
+models_predictions_path = {
+    "birds": "data/models/birds.joblib",
+    "construction": "data/models/construction.joblib",
+    "dogs": "data/models/dogs.joblib",
+    "human": "data/models/human.joblib",
+    "music": "data/models/music.joblib",
+    "nature": "data/models/nature.joblib",
+    "siren": "data/models/siren.joblib",
+    "vehicles": "data/models/vehicles_IDMT.joblib",
+    "P": "data/models/model_pleasantness.joblib",
+    "E": "data/models/model_eventfulness.joblib",
 }
 
 
