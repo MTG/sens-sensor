@@ -87,7 +87,6 @@ def perform_prediction(
     # Get parameters needed
     folder_path = pm.audios_folder_path
     saving_folder_path = pm.predictions_folder_path
-    sources = pm.sources
 
     # SINGLE FILE ANALYSIS
     # Load data from .pkl file

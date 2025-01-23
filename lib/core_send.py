@@ -18,84 +18,7 @@ sys.path.append(src_dir)
 import lib.client as client
 from lib.leds import turn_leds_on, turn_leds_off
 import parameters as pm
-
-
-# OUTDATED FUNCTION --> NOT NEEDED
-def get_latest_folder(folder_path):
-    # Get the txt files in the folder
-    folders = [
-        f
-        for f in os.listdir(folder_path)
-        if os.path.isdir(os.path.join(folder_path, f)) and f.startswith("predictions_")
-    ]
-
-    if not folders:
-        return None
-
-    # Find the most recent folder based on the folder name
-    latest_folder = max(folders, key=lambda f: f.split("_")[1:])
-    latest_folder_path = os.path.join(folder_path, latest_folder)
-
-    return latest_folder_path
-
-
-# OUTDATED FUNCTION --> NOT GONNA WORK
-def send(folder_path, ip, port):
-    sock = connect_to_server(ip, port)
-    if not sock:
-        print("Could not establish connection to the server. Exiting.")
-        return
-
-    # Get folder
-    latest_folder_path = get_latest_folder(folder_path)
-    print(f"Latest folder {latest_folder_path}")
-
-    # Read predictions, send them and delete them once sent
-
-    last_sent_file = None  # To track last sent file to avoid resending
-
-    try:
-        while True:
-            # Get latest file
-            file_pattern = "*.txt"
-            files = glob.glob(os.path.join(latest_folder_path, file_pattern))
-            if len(files) != 0:
-                # There are files!
-                files.sort()
-                latest_file = files[-1]
-                print(f"Latest file {latest_file}")
-
-                # Check if file was not sent already
-                if last_sent_file != latest_file:
-                    # New file
-                    # Check if file is not empty
-                    if os.path.getsize(latest_file) > 0:
-                        # File has content
-                        # Read and send content
-                        with open(latest_file, "r") as file:
-                            content = file.read()
-
-                        if sock is not None:
-                            # Send predictions
-                            try:
-                                sock.sendall(content.encode("utf-8"))
-                                print(f"Content from file {latest_file} sent.")
-                                # Update
-                                last_sent_file = latest_file
-
-                                # Proceed to delete sent file
-                                os.remove(latest_file)
-                                print(f"File {latest_file} deleted.")
-
-                            except (socket.error, BrokenPipeError):
-                                print("Connection is lost!")
-                                # Try to reconnect
-                                connect_to_server(ip, port)
-
-                time.sleep(1)  # FIXME delete
-
-    finally:
-        print("Adios")
+from lib.functions_status import gather_raspberry_pi_info
 
 
 def connect_to_server(ip, port):
@@ -121,8 +44,8 @@ def send_server():
 
     # Get parameters needed
     led_pins = [pm.red]  # Define GPIO pins for each LED
-    sources = pm.sources
     folder_path = pm.predictions_folder_path
+    status_every = pm.status_every
 
     # Configure LEDs
     GPIO.setmode(GPIO.BCM)  # Set up GPIO mode
@@ -131,6 +54,9 @@ def send_server():
     # 16--> Green
     for pin in led_pins:  # Set up each LED pin as an output
         GPIO.setup(pin, GPIO.OUT)
+
+    # Counter for sending sensor status updates
+    counter_status = 0
 
     # Read predictions, send them and delete them once sent
     try:
@@ -148,24 +74,15 @@ def send_server():
                         # File has content
                         # Read and send content
                         with open(single_file, "r") as file:
-                            content = json.load(single_file)  # content = file.read()
+                            content = json.load(single_file)
 
-                        """ # Split data string into individual values
-                        values = content.split(";")
+                        # Sensor status
+                        if counter_status == 0:
+                            sensor_info = (
+                                gather_raspberry_pi_info()
+                            )  # FIXME send every certain messages!
+                            content["sensor_info"] = sensor_info
 
-                        # Create dictionary for "sources" and the rest of the keys
-                        content = {
-                            "sources": dict(zip(pm.sources, values[:8])),
-                            "pleasantness_inst": values[8],
-                            "pleasantness_intg": values[9],
-                            "eventfulness_inst": values[10],
-                            "eventfulness_intg": values[11],
-                            "leq": values[12],
-                            "LAeq": values[13],
-                            "datetime": values[14],
-                        }
-                        # content["datetime"]=content["datetime"].split("\n")[0]
-                        print("content json ", content) """
                         response = client.post_sensor_data(
                             data=content,
                             sensor_timestamp=content["datetime"],
@@ -179,6 +96,10 @@ def send_server():
                                 os.remove(single_file)
                                 print(f"Deleted.")
                                 turn_leds_on(GPIO, led_pins)  # Turn on LEDs
+                                # Update counter status
+                                counter_status = +1
+                                if counter_status >= status_every:
+                                    counter_status = 0
                             else:
                                 print(
                                     f"File {single_file} could not be sent. Server response: {response}"

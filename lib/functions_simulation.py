@@ -25,7 +25,7 @@ from numpy import pi, convolve
 import matplotlib.pyplot as plt
 import pandas as pd
 import json
-from download_data import general_plots
+from development.lib.download_data import general_plots
 
 # Path importing
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -152,9 +152,6 @@ def sensor_processing(
     model_CLAP_path,
     models_predictions_path,
     pca_path,
-    sources,
-    sensor_id="",
-    location="",
 ):
 
     # Load models
@@ -168,14 +165,24 @@ def sensor_processing(
     ch = wf.getnchannels()
     sample_width = wf.getsampwidth()
 
+    # Check sample width
+    if sample_width == 1:
+        dtype = np.uint8  # 8-bit unsigned
+    elif sample_width == 2:
+        dtype = np.int16  # 16-bit signed
+    elif sample_width == 4:
+        dtype = np.int32  # 32-bit signed
+    else:
+        raise ValueError(f"Unsupported sample width: {sample_width}")
+
     # print(f"Fs {fs}, ch {ch}, sample width {sample_width}")
 
     segment_samples = seconds_segment * fs
     long_buffer_samples = n_segments * segment_samples
 
     # Buffers for accumulating audio data
-    short_buffer = np.array([], dtype=np.int16)
-    long_buffer = np.array([], dtype=np.int16)
+    short_buffer = np.array([], dtype=np.float32)
+    long_buffer = np.array([], dtype=np.float32)
 
     # Elapsed time
     elapsed_time = 0
@@ -223,10 +230,16 @@ def sensor_processing(
             # audio_samples = np.frombuffer(audio_data, dtype=np.int16)
 
             # Convert audio_samples to a NumPy array
-            audio_samples = np.frombuffer(audio_samples, dtype=np.int16)
+            audio_samples = np.frombuffer(audio_samples, dtype=dtype)
             audio_samples = audio_samples.reshape(-1, ch)  # Shape as [time, channels]
             audio_samples = audio_samples[:, 0]  # keep only one channel
-            audio_samples = audio_samples / (2**15 - 1)  # 16bit convert to wav [-1,1]
+            # Normalize to [-1, 1]
+            if sample_width == 1:
+                # 8-bit unsigned
+                audio_samples = (audio_samples - 128) / 128
+            else:
+                max_value = float(2 ** (8 * sample_width - 1) - 1)
+                audio_samples = audio_samples / max_value
 
             # Accumulate the audio samples in both buffers
             short_buffer = audio_samples  # * gain / 6.44  # apply gain
@@ -243,22 +256,16 @@ def sensor_processing(
             features_intg = model_CLAP.get_audio_embedding_from_data(
                 [long_buffer], use_tensor=False
             )
+            # Apply PCA
+            features_segment = pca.transform(features_segment)
+            features_intg = pca.transform(features_intg)
+
             # finish_time = time.time()
 
-            # Calculate probabilities, if model was not inputted, then put 0 in corresponding gap
+            # Calculate probabilities
             predictions = {}
             for model in models_predictions:
-                if model != "P" and model != "E":
-                    # Model is a source type
-                    # Check if "sources" exists in predictions; if not, initialize it as an empty dictionary
-                    if "sources" not in predictions:
-                        predictions["sources"] = {}
-                    predicted_value = models_predictions[model].predict_proba(
-                        features_segment
-                    )[0][1]
-                    predictions["sources"][model] = predicted_value
-
-                else:
+                if model == "P" or model == "E":
                     # Model is P or E
                     predictions[str(model + "_inst")] = models_predictions[
                         model
@@ -266,78 +273,26 @@ def sensor_processing(
                     predictions[str(model + "_intg")] = models_predictions[
                         model
                     ].predict(features_intg)[0]
+                else:
+                    # Model is a source type
+                    # Check if "sources" exists in predictions; if not, initialize it as an empty dictionary
+                    if "sources" not in predictions:
+                        predictions["sources"] = {}
+                    predictions["sources"][model] = models_predictions[
+                        model
+                    ].predict_proba(features_segment)[0][1]
 
             # Calculate Leq
             short_buffer = short_buffer
-            Leq_calc = mean_dB(pressure2leq(short_buffer * 1.5, 48000))
+            Leq_calc = mean_dB(pressure2leq(short_buffer * gain, 48000))
             predictions["leq"] = Leq_calc
 
             # Calculate LAeq
-            LAeq = calculate_LAeq(short_buffer * 6.44, fs=48000)
+            LAeq = calculate_LAeq(short_buffer * gain, fs=48000)
             predictions["LAeq"] = LAeq
 
             # Add datetime
             predictions["datetime"] = timestamp.isoformat()
-
-            # Save for dataframe
-
-            """ predictions = []
-            all_predictions = [
-                "birds",
-                "construction",
-                "dogs",
-                "human",
-                "music",
-                "nature",
-                "siren",
-                "vehicles",
-                "P",
-                "E",
-            ]
-            predictions = []
-            for model in all_predictions:
-                if model in models_predictions:
-                    # This model is desired
-                    if model in sources:
-                        # Model is a source type
-                        prediction = models_predictions[model].predict_proba(
-                            features_segment
-                        )[0][1]
-                        predictions.append(prediction)
-                    else:
-                        # Model is P or E
-                        prediction_inst = models_predictions[model].predict(
-                            features_segment
-                        )[0]
-                        predictions.append(prediction_inst)
-                        prediction_intg = models_predictions[model].predict(
-                            features_intg
-                        )[0]
-                        predictions.append(prediction_intg)
-                else:
-                    # This model is not desired, write 0
-                    if model in sources:
-                        predictions.append(0)
-                    else:
-                        predictions.append(0)  # for inst
-                        predictions.append(0)  # for intg
-
-            # Calculate Leq
-            short_buffer = short_buffer
-            Leq_calc = mean_dB(pressure2leq(short_buffer * 6.44, 48000))
-            Leq_calc_str = "{:.2f}".format(Leq_calc)
-
-            # Calculate LAeq
-            LAeq = calculate_LAeq(short_buffer * 6.44, fs=48000)
-
-            # Format the predictions into a string
-            prediction_str = ";".join([f"{pred:.2f}" for pred in predictions])
-
-            # Add Leq and the timestamp
-            output_line = (
-                f"{prediction_str};{Leq_calc_str};{LAeq};{timestamp.isoformat()}"
-            ) """
-            # print(output_line)
 
             # SAVE ALL predictions vector in file
             if "save" in action:
