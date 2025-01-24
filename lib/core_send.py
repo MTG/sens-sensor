@@ -153,7 +153,7 @@ def send_library():
                     # File has content
                     # Read and send content
                     with open(single_file, "r") as file:
-                        content = file.read()
+                        content = json.load(file)
 
                     # content_screen = content + ";" + str(pm.human_th)
                     content_screen = content
@@ -162,50 +162,16 @@ def send_library():
                     # Check connection
                     turn_leds_on(GPIO, led_pins)  # Turn on LEDs
                     try:
-                        sock.sendall(content_screen.encode("utf-8"))
+                        sock.sendall(json.dumps(content_screen).encode("utf-8"))
                     except BrokenPipeError:
                         print("Broken pipe error: Socket is no longer available.")
                         sock = connect_to_server(ip, port)
-                        sock.sendall(content_screen.encode("utf-8"))
+                        sock.sendall(json.dumps(content_screen).encode("utf-8"))
                         print(f"Sent to screen {single_file}")
                     except Exception as e:
                         print(f"An unexpected error occurred: {e}")
 
-                    # Move to another folder
-                    """ destination_path = (
-                        not_sent_predictions_folder_path
-                        + single_file.split(predictions_folder_path)[-1]
-                    )
-
-                    # Move file to not sent anyways
-                    try:
-                        if not os.path.exists(not_sent_predictions_folder_path):
-                            os.makedirs(not_sent_predictions_folder_path)
-                            print(f"Folder created: {not_sent_predictions_folder_path}")
-
-                        shutil.move(single_file, destination_path)
-                        print(f"File moved from {single_file} to {destination_path}")
-                    except Exception as e:
-                        print(
-                            f"An error occurred in moving file to another folder: {e}"
-                        ) """
-
                     # Send to server
-                    """ # Split data string into individual values
-                    values = content.split(";")
-
-                    # Create dictionary for "sources" and the rest of the keys
-                    content = {
-                        "sources": dict(zip(pm.sources, values[:8])),
-                        "pleasantness_inst": values[8],
-                        "pleasantness_intg": values[9],
-                        "eventfulness_inst": values[10],
-                        "eventfulness_intg": values[11],
-                        "leq": values[12],
-                        "LAeq": values[13],
-                        "datetime": values[14],
-                    } """
-                    # content["datetime"]=content["datetime"].split("\n")[0]
                     response = client.post_sensor_data(
                         data=content,
                         sensor_timestamp=content["datetime"],
