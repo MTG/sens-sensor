@@ -6,42 +6,18 @@
 
 <div align="center">
   <a href="https://github.com/github_username/repo_name">
-    <img src="data/images/Paper_banner.png" alt="Logo">
+    <img src="data/images/SENS_banner.png" alt="Logo">
   </a>
 
-<h3 align="center">Abstract</h3>
 
   <p align="center">
-    Text here
+
+  The Smart Environmental Noise System (SENS) is an advanced sensor technology designed for real-time acoustic monitoring, with a focus on urban environments. Built on a Raspberry Pi platform, SENS captures sound continuously and processes it locally using custom-developed software based on small and efficient artificial intelligence algorithms. SENS calculates acoustic parameters, including Sound Pressure Level (SPL), and makes predictions of the perceptual sound attributes of pleasantness and eventfulness (ISO 12913), along with detecting the presence of specific sound sources such as vehicles, birds, and human activity, among others. To safeguard privacy, all processing occurs directly on the device in real-time ensuring that no audio recordings are permanently stored or transferred. Additionally, the system transmits the extracted audio representation through the wireless network to a remote server, made possible using mobile data connectivity. SENS technology represents an innovative step in environmental noise monitoring, offering real-time processing and robust privacy protection. A single SENS device or a network of them could serve as a powerful tool for understanding the acoustic characteristics of soundscapes with efficiency and flexibility.
+
   </p>
   
 </div>
 
-<!-- TABLE OF CONTENTS 
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
-  </ol>
-</details> -->
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
@@ -136,30 +112,8 @@ Now you are ready to start using sens-sensor repository.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-## RUN CODE ¡¡FIXME!!
-This code runs in combination with *path/to/KeAcoustics/main.py* in order to have the sensor capturing sound, storing segments of audio files, deleting the oldest segments, and processing joint segments to make predictions of pleasantness, eventfulness and sound sources.
-
-+ ***path/to/KeAcoustics/main.py*** code is in charge of recording the audio and handling the saving of audio segments. The following are the two main parameters to consider from *path/to/KeAcoustics/parameters.py*:
-    - ```spl_time``` --> Time used for SPL average in seconds (time length of each segment)
-    - ```maintain_time```--> Time in seconds that we want to preserved stored segments
-  
-
-+ In this code, ***path/to/calculation.py*** is in charge of reading the audio stored and making predictions.
- Firstly, it loads the model in initialization function.
- Then it joins the saved audio. The number of segments to join are given in n_segments function.
- Finally, the audio is used for the predictions, and these values are saved in a txt file.
-  
-  *NOTE: Run with the created environment*
-
-
-+ Also in this code, ***path/to/main.py*** works similar to *calculation.py* but additionally sends the predictions via TCP to specified address
-  ```
-  python main.py <ip address> <ip port>
-  ```
-  *NOTE: Run with the created environment*
-
+## RUN CODE 
 
 <!-- LICENSE -->
 ## License
-
-Distributed under the ...<!-- MIT License. See `LICENSE.txt` for more information.<p align="right">(<a href="#readme-top">back to top</a>)</p>-->
+See `LICENSE` for more information.<p align="right">(<a href="#readme-top">back to top</a>)</p>-->
