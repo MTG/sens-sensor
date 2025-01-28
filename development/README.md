@@ -364,6 +364,9 @@ Check <a href="PCA_generation.ipynb">PCA_generation.ipynb</a> to see the analysi
 
 Run <a href="PCA_testing.py">PCA_testing.py</a> to see the improvement it makes to incorporate the PCA to the system.
 
+## Reducing LAION-AI's CLAP MODEL
+We use the CLAP model provided by LAION-AI to generate the embeddings that constitute the input to the models we develop. This model allows both audio to text and text to audio transformations. The size of it is close to 2GB. In our case, we only need the audio to text transformation, therefore, we remove the text to audio part from the model to reduce its size. For this, run <a href="clean_CLAP_audio_only.py">clean_CLAP_audio_only.py</a>
+
 
 ## Environment configuration
 Check section in the main project README.
