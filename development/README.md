@@ -357,7 +357,16 @@ In order to reproduce the creation of the models for predicting the sound source
         │   │   │   ├── street_music.joblib
         │   │   │   └── street_music_model_info.txt
         ```
+## PCA transformation
+The very same procedures that where presented in the sections above can be performed with or without PCA transformation applied to the 512-length CLAP embedding generated, resulting in a 50-length input vector to the models.
+
+Check <a href="PCA_generation.ipynb">PCA_generation.ipynb</a> to see the analysis we perform in order to find that 50 components were enough to explain 95% of the CLAP embeddings variability. In this script we save the PCA transform we use.
+
+Run <a href="PCA_testing.py">PCA_testing.py</a> to see the improvement it makes to incorporate the PCA to the system.
+
+
 ## Environment configuration
+Check section in the main project README.
 
 ## References
 - Amaia Sagasti, Martín Rocamora, Frederic Font: *Prediction of Pleasantness and Eventfulness Perceptual Sound Qualities in Urban Soundscapes* - DCASE Workshop 2024 <a href="https://dcase.community/documents/workshop2024/proceedings/DCASE2024Workshop_Sagasti_12.pdf">Paper link DCASE webpage</a>
