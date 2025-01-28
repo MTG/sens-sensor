@@ -117,11 +117,13 @@ This project is implemented in a RaspberryPi model B. The device has a microphon
 
 The following three images indicate the 3 main processes that create SENS working. Each process is called through a different python script that is called in different terminal windows.
 
-<img src="data/images/main_capture.png" alt="audio capture process">
-<img src="data/images/main_process.png" alt="audio processing process">
-<img src="data/images/main_send.png" alt="result sending process">
+<img src="data/images/main_capture.png" alt="audio capture process" width="75%">
+<img src="data/images/main_process.png" alt="audio processing process" width="75%">
+<img src="data/images/main_send.png" alt="result sending process" width="75%">
 
-NOTE: All inputs indicated in orange indicate that the specific input is defined in the ***parameters.py*** file.
+<i>NOTE: All inputs indicated in orange color indicate that they are defined in the ***parameters.py*** file.</i>
+
+#### Other scripts
 
 
 <!-- LICENSE -->
