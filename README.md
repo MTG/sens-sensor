@@ -42,9 +42,7 @@ It is funded by <i>BIT Habitat (Ajuntament de Barcelona)</i> under the program <
 
 
 <!-- GETTING STARTED -->
-## Getting Started
-**The code is implemented in a RaspberryPi model B. The device has a microphone connected as well as a Mobile Network Module with a SIM card.**
-
+## Environment set up
 This section provides all the necessary information to set up the working environment. 
 
 NOTE: This project is only compatible with 64-bit RaspberryPi architecture. Check your architecture by opening a terminal and running: 
@@ -112,7 +110,19 @@ Now you are ready to start using sens-sensor repository.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-## RUN CODE 
+## Raspberry Pi device information
+This project is implemented in a RaspberryPi model B. The device has a microphone connected as well as a Mobile Network Module with a SIM card. Additionally, three LED pins are connected.
+
+## Run code
+
+The following three images indicate the 3 main processes that create SENS working. Each process is called through a different python script that is called in different terminal windows.
+
+<img src="data/images/main_capture.png" alt="audio capture process">
+<img src="data/images/main_process.png" alt="audio processing process">
+<img src="data/images/main_send.png" alt="result sending process">
+
+NOTE: All inputs indicated in orange indicate that the specific input is defined in the ***parameters.py*** file.
+
 
 <!-- LICENSE -->
 ## License
