@@ -121,9 +121,14 @@ The following three images indicate the 3 main processes that create SENS workin
 <img src="data/images/main_process.png" alt="audio processing process" width="75%">
 <img src="data/images/main_send.png" alt="result sending process" width="75%">
 
-<i>NOTE: All inputs indicated in orange color indicate that they are defined in the ***parameters.py*** file.</i>
+<i>NOTE: All inputs indicated in orange color indicate that they are defined in ***parameters.py***. This file contains all the configuration parameters, variables and paths to the necessary files.</i>
 
 #### Other scripts
+Together with the three main scripts, we provide extra code for other processes involved in SENS project context but not necessary to be run in the actual developped sensor.
+
+- ***simulate_SENS.py***: This script simulates SENS sensor on a pre-recorded WAV audio. The input audio is analysed in chunks of audio data. The resulting output are saved in JSON files containing the predictions, Leq and LAeq of each audio chunk.
+
+- ***main_send_lib.py***: SENS sensor was used in an experiment developed in a library under the framework of a project called SOUNDLIGHTS. This project research how real-time message signs could be use to improve the acoustic quality. The sensor was connected through the wireless network to a LED screen (connected to another RaspberryPi). In this scenario, SENS was calculating SPL and predicting the presence of human activity. This information was sent to the LED screen together with a threshold value using this script. The LED screen interpreted the message and prompted different messages, with the goal to influence people behaviour inside the library. Additionally, the sensor through  main_send_lib.py also sends the resulting predictions to the remote server.
 
 
 <!-- LICENSE -->
