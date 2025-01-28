@@ -675,5 +675,82 @@ def main_get_data(csv_file):
             json.dump(data_dict, json_file, indent=4)
 
 
+def main_get_data_2(
+    sensor_id,
+    start_year,
+    start_month,
+    start_day,
+    start_hour,
+    start_minute,
+    start_second,
+    end_year,
+    end_month,
+    end_day,
+    end_hour,
+    end_minute,
+    end_second,
+    saving_path,
+):
+    """
+    # Iterate over rows in DataFrame
+    for index, row in df.iterrows():
+        # Access values of each row by column name
+        # Example: Access value of the 'column_name' in the row
+        value = row["Date"]
+        print(value)
+
+        start_array = row["Start_time"].split(":")
+        end_array = row["End_time"].split(":")
+        date_array = row["Date"].split("-")"""
+
+    start = datetime.datetime(
+        start_year,
+        start_month,
+        start_day,
+        start_hour,
+        start_minute,
+        start_second,
+    )
+    end = datetime.datetime(
+        end_year,
+        end_month,
+        end_day,
+        end_hour,
+        end_minute,
+        end_second,
+    )
+    get_data_from_sensor(start, end, sensor_id, saving_path)
+
+    # Save metadata in txt
+    # Step 1: Create your dictionary
+    """ data_dict = {
+        "Name": row["Name"],
+        "Sensor_Id": row["Sensor_Id"],
+        "Location": row["Location"],
+        "Date": row["Date"],
+        "Start_time": row["Start_time"],
+        "End_time": row["End_time"],
+    }
+
+    # Step 2: Save the dictionary as a JSON file
+    with open(os.path.join(saving_path, "point_info.json"), "w") as json_file:
+        json.dump(data_dict, json_file, indent=4) """
+
+
 # csv_file = "data/recording_points.csv"
-# main_get_data(csv_file)
+""" main_get_data_2(
+    sensor_id="sensor_01",
+    start_year=2024,
+    start_month=11,
+    start_day=25,
+    start_hour=17,
+    start_minute=35,
+    start_second=0,
+    end_year=2024,
+    end_month=11,
+    end_day=25,
+    end_hour=18,
+    end_minute=20,
+    end_second=0,
+    saving_path="data/datos_experimento_bilioteca/entrada",
+) """

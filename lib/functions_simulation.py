@@ -25,7 +25,7 @@ from numpy import pi, convolve
 import matplotlib.pyplot as plt
 import pandas as pd
 import json
-from development.lib.download_data import general_plots
+from lib.functions_download_data import general_plots
 
 # Path importing
 current_dir = os.path.dirname(os.path.abspath(__file__))

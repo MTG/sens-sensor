@@ -60,7 +60,7 @@ def extract_timestamp(file_name):
     """file_name expected like ../temporary_audios/segment_20241120_141750.txt"""
     # Extract date and time from the file name
     print("file name to split ", file_name)
-    _, date_part, time_part = file_name.split("/")[2].split(".txt")[0].split("_")
+    date_part, time_part = file_name.split("/segment_")[1].split(".txt")[0].split("_")
 
     # Parse the date and time
     dt = datetime.datetime.strptime(date_part + time_part, "%Y%m%d%H%M%S")
@@ -94,12 +94,14 @@ def perform_prediction(
         file_data = pickle.load(f)
     # Load data from corresponding txt file
     txt_file_name = file_path.split(".pkl")[0] + ".txt"
-    txt_file_path = os.path.join(folder_path, txt_file_name)
+    txt_file_path = txt_file_name
+    # txt_file_path = os.path.join(folder_path, txt_file_name)
     with open(txt_file_path, "r") as f:
         content = f.read().split(";")
         Leq = float(content[0])
         LAeq = float(content[1])
     # Extract features
+    print("fila data ", file_data.shape)
     features_single = model_CLAP.get_audio_embedding_from_data(
         [file_data], use_tensor=False
     )

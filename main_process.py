@@ -17,7 +17,7 @@ def main():
         # Call function
         sensor_work()
     else:
-        print("Usage: << python main.py >> ")
+        print("Usage: << python main_process.py >> ")
         sys.exit(1)
 
 
