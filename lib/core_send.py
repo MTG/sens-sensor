@@ -78,9 +78,7 @@ def send_server():
 
                         # Sensor status
                         if counter_status == 0:
-                            sensor_info = (
-                                gather_raspberry_pi_info()
-                            )  # FIXME send every certain messages!
+                            sensor_info = gather_raspberry_pi_info()
                             content["sensor_info"] = sensor_info
 
                         response = client.post_sensor_data(

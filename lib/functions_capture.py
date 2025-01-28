@@ -55,7 +55,9 @@ def record_continuously(device, fs, channels, seconds_segment, saving_folder_pat
                         print(data_to_save.shape)
 
                     # Leq and LAeq calculation
-                    spl_str = calculate_SPL(audio_data=data_to_save, fs=fs)
+                    spl_str = calculate_SPL(
+                        audio_data=data_to_save, fs=fs, gain=pm.mic_calib
+                    )
 
                     # Generate a timestamped filename
                     date_time = datetime.datetime.now()

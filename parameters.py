@@ -75,6 +75,7 @@ not_sent_predictions_folder_path = "../predictions_not_sent"
 
 # MIC CALIBRATION
 mic_calib_path = "../noisedata_admin/calib.txt"
+mic_calib = 1
 
 # CONFIGURATIONS
 segment_length = 3
