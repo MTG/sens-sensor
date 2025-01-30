@@ -20,7 +20,7 @@ sys.path.append(src_dir)
 from CLAP.src.laion_clap import CLAP_Module
 import parameters as pm
 from lib.towers import create_tower
-from lib.leds import turn_leds_on, turn_leds_off
+from lib.functions_leds import turn_leds_on, turn_leds_off
 
 
 def crossfade(audio1, audio2, duration, fs):

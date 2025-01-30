@@ -16,7 +16,7 @@ sys.path.append(src_dir)
 
 # Imports from this project
 import lib.client as client
-from lib.leds import turn_leds_on, turn_leds_off
+from lib.functions_leds import turn_leds_on, turn_leds_off
 import parameters as pm
 from lib.functions_status import gather_raspberry_pi_info
 
