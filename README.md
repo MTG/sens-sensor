@@ -133,4 +133,4 @@ Together with the three main scripts, we provide extra code for other processes 
 
 <!-- LICENSE -->
 ## License
-See `LICENSE` for more information.<p align="right">(<a href="#readme-top">back to top</a>)</p>-->
+See `LICENSE` for more information.<p align="right">(<a href="#readme-top">back to top</a>)</p>
