@@ -7,6 +7,7 @@ from maad.spl import pressure2leq
 from maad.util import mean_dB
 import pickle
 import glob
+import sounddevice as sd
 
 # Path importing
 current_dir = os.path.dirname(os.path.abspath(__file__))
