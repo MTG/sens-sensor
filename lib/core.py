@@ -14,7 +14,6 @@ sys.path.append(src_dir)
 
 # Imports from this project
 from lib.functions_predictions import initiate, perform_prediction
-from lib.functions_connection import establish_connection
 from lib.leds import turn_leds_on, turn_leds_off
 import parameters as pm
 
