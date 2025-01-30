@@ -7,7 +7,7 @@ src_dir = os.path.abspath(os.path.join(current_dir, "../../"))
 sys.path.append(src_dir)
 
 # Imports from this project
-from lib.core import sensor_work
+from lib.functions_predictions import sensor_work
 import parameters as pm
 
 
