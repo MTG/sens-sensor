@@ -8,7 +8,7 @@ sys.path.append(src_dir)
 
 # Imports from this project
 import parameters as pm
-from lib.core_send import send_library
+from lib.functions_send import send_library
 
 
 def main():

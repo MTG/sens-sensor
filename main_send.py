@@ -7,7 +7,7 @@ src_dir = os.path.abspath(os.path.join(current_dir, "../../"))
 sys.path.append(src_dir)
 
 # Imports from this project
-from lib.core_send import send_server
+from lib.functions_send import send_server
 
 
 def main():
