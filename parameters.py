@@ -80,7 +80,7 @@ mic_calib = 1
 # CONFIGURATIONS
 segment_length = 3
 n_segments_intg = 10
-LAeq_limit = 70
+LAeq_limit = 50
 
 # PINS ASSIGNMENT
 yellow = 20
