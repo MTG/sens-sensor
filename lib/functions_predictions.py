@@ -63,7 +63,7 @@ def extract_timestamp(file_name):
     """file_name expected like ../temporary_audios/segment_20241120_141750.txt"""
     # Extract date and time from the file name
     print("file name to split ", file_name)
-    date_part, time_part = file_name.split("/segment_")[1].split(".txt")[0].split("_")
+    date_part, time_part = file_name.split("/segment_")[-1].split(".txt")[0].split("_")
 
     # Parse the date and time
     dt = datetime.datetime.strptime(date_part + time_part, "%Y%m%d%H%M%S")
@@ -93,8 +93,12 @@ def perform_prediction(
 
     # SINGLE FILE ANALYSIS
     txt_file_path = file_path
+    #txt_file_name= file_path.split("_")[-1].split(".txt")[0]
     # Load audio data
-    audio_file_path = file_path.split(".txt")[0] + ".pkl"
+    audio_file_path = files_path[-1] #file_path.split(".txt")[0] + ".pkl"
+    print(f"txt file {txt_file_path}")
+    print(f"audio file {audio_file_path}")
+    print("size ", os.path.getsize(audio_file_path))
     with open(audio_file_path, "rb") as f:
         file_data = pickle.load(f)
     # Load txt file
@@ -156,7 +160,7 @@ def perform_prediction(
     # Complete dictionary with Leq, LAeq, datetime
     tzinfo = zoneinfo.ZoneInfo(time.tzname[0])
     current_timestamp = datetime.datetime.now(tzinfo).replace(microsecond=0)
-    measure_timestamp = extract_timestamp(file_name=txt_file_name)
+    measure_timestamp = extract_timestamp(file_name=txt_file_path)
     predictions["leq"] = Leq
     predictions["LAeq"] = LAeq
     predictions["datetime"] = measure_timestamp.isoformat()
@@ -315,18 +319,19 @@ def sensor_work():
         # print("Calculating ...")
 
         # Find all .pkl files in the folder
-        file_pattern = "segment_*.txt"
+        file_pattern = "segment_*.pkl"
         files_path = glob.glob(os.path.join(audios_folder_path, file_pattern))
 
         # Sort files by timestamp in the filename
         files_path.sort()
 
-        # Take most recent audio file for analysis
-        single_file_path = files_path[-1]
+        # Take most recent txt file for analysis
+        audio_single_file_path = files_path[-1] # Latest audio path
+        single_file_path=audio_single_file_path.replace(".pkl", ".txt") # Latest text path
 
         # Is it new?
         if single_file_path != prev_file:
-            if os.path.getsize(single_file_path) >= 24 * 8:  # txt files are 24Bytes
+            if os.path.getsize(single_file_path) >= 9 and os.path.getsize(audio_single_file_path) >= 960163:  # txt files contain 9 characters
                 print("New file!")
 
                 # Read measured LAeq to see if prediction needs to be done
@@ -352,19 +357,20 @@ def sensor_work():
 
                     # Perform prediction
                     perform_prediction(
-                        file_path=single_file_path,
-                        files_path=files_path,
+                        file_path=single_file_path, # latest txt file path
+                        files_path=files_path, # latests audio paths
                         model_CLAP=model_CLAP,
                         models_predictions=models_predictions,
                         pca=pca,
                     )
                 else:
                     print(
-                        f"Laeq={LAeq}dBA does not reach limit {pm.LAeq_limit}dBA. No prediction."
+                        f"{single_file_path} file --> Laeq={LAeq}dBA does not reach limit {pm.LAeq_limit}dBA. No prediction."
                     )
 
                 # Either way, this file already was analised
                 prev_file = single_file_path
 
+        time.sleep(0.1)
         # print("Waiting...")
-        turn_leds_off(GPIO, led_pins)  # Turn on LEDs
+        turn_leds_off(GPIO, led_pins)  # Turn off LEDs
