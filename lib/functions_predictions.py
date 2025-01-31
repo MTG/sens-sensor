@@ -10,6 +10,7 @@ import json
 import math
 import socket
 import zoneinfo
+
 import RPi.GPIO as GPIO
 
 # Path importing
@@ -91,13 +92,12 @@ def perform_prediction(
     saving_folder_path = pm.predictions_folder_path
 
     # SINGLE FILE ANALYSIS
-    # Load data from .pkl file
-    with open(file_path, "rb") as f:
+    txt_file_path = file_path
+    # Load audio data
+    audio_file_path = file_path.split(".txt")[0] + ".pkl"
+    with open(audio_file_path, "rb") as f:
         file_data = pickle.load(f)
-    # Load data from corresponding txt file
-    txt_file_name = file_path.split(".pkl")[0] + ".txt"
-    txt_file_path = txt_file_name
-    # txt_file_path = os.path.join(folder_path, txt_file_name)
+    # Load txt file
     with open(txt_file_path, "r") as f:
         content = f.read().split(";")
         Leq = float(content[0])
@@ -315,7 +315,7 @@ def sensor_work():
         # print("Calculating ...")
 
         # Find all .pkl files in the folder
-        file_pattern = "segment_*.pkl"
+        file_pattern = "segment_*.txt"
         files_path = glob.glob(os.path.join(audios_folder_path, file_pattern))
 
         # Sort files by timestamp in the filename
@@ -326,28 +326,44 @@ def sensor_work():
 
         # Is it new?
         if single_file_path != prev_file:
-            if os.path.getsize(single_file_path) >= 960163:
+            if os.path.getsize(single_file_path) >= 24 * 8:  # txt files are 24Bytes
                 print("New file!")
 
-                # Leave only specified seconds of data (n_segments) for group analysis
-                if "P" in models_predictions_path or "E" in models_predictions_path:
-                    number_files = len(files_path)
-                    if number_files >= n_segments:
-                        files_path = files_path[
-                            (number_files - n_segments) : number_files
-                        ]
+                # Read measured LAeq to see if prediction needs to be done
+                with open(single_file_path, "r") as f:
+                    content = f.read().split(";")
+                    # Leq = float(content[0])
+                    LAeq = float(content[1])
 
-                turn_leds_on(GPIO, led_pins)  # Turn on LEDs
-                # time.sleep(0.2)  # FIXME to make sure there is content !!!!!! PUT BACK???
+                if LAeq >= pm.LAeq_limit:
+                    # Then do prediction, otherwise, don't
+                    print("LAeq above limits. Predict!")
 
-                # Perform prediction
-                perform_prediction(
-                    file_path=single_file_path,
-                    files_path=files_path,
-                    model_CLAP=model_CLAP,
-                    models_predictions=models_predictions,
-                    pca=pca,
-                )
+                    # Leave only specified seconds of data (n_segments) for group analysis
+                    if "P" in models_predictions_path or "E" in models_predictions_path:
+                        number_files = len(files_path)
+                        if number_files >= n_segments:
+                            files_path = files_path[
+                                (number_files - n_segments) : number_files
+                            ]
+
+                    turn_leds_on(GPIO, led_pins)  # Turn on LEDs
+                    # time.sleep(0.2)  # FIXME to make sure there is content !!!!!! PUT BACK???
+
+                    # Perform prediction
+                    perform_prediction(
+                        file_path=single_file_path,
+                        files_path=files_path,
+                        model_CLAP=model_CLAP,
+                        models_predictions=models_predictions,
+                        pca=pca,
+                    )
+                else:
+                    print(
+                        f"Laeq={LAeq}dBA does not reach limit {pm.LAeq_limit}dBA. No prediction."
+                    )
+
+                # Either way, this file already was analised
                 prev_file = single_file_path
 
         # print("Waiting...")

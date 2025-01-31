@@ -12,7 +12,6 @@ from lib.functions_send import send_library
 
 
 def main():
-    # Check if the user provided exactly 2 arguments (IP and Port)
     if len(sys.argv) == 1:
         # Call function
         send_library()
