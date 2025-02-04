@@ -25,7 +25,7 @@ def main(data_path):
     # RUN ########################################################################
     dataset_path = os.path.join(
         data_path, "files/UrbanSound8K_CLAP_dataset/UrbanSound8K_CLAP_dataset.json"
-    )  # path to json file containing USM-extended
+    )  # data/files/IDMT-US8k_CLAP_dataset/IDMT-US8k_CLAP_dataset.json # TO INCLUDE IDMT VEHIcLES
     algorithms = {
         "air_conditioner": "linear",
         "car_horn": "linear",
@@ -38,10 +38,10 @@ def main(data_path):
         "siren": "linear",
         "street_music": "linear",
         "construction": "linear",
-    }  # "vehicles_IDMT": "linear",
+    }  # "vehicles_IDMT": "linear", # TO INCLUDE IDMT VEHIcLES
     saving_path = os.path.join(
         data_path, "models/sources_US8k"
-    )  # path to folder where to save the models
+    )  # models/sources_US8k-IDMT # TO INCLUDE IDMT VEHIcLES
 
     train_US8k_models(dataset_path, algorithms, saving_path)
     ##############################################################################
@@ -49,7 +49,7 @@ def main(data_path):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Train Random Forest Regression models for the prediction of Pleasantness and Eventfulness with determined configuration. Saves models."
+        description="Train indicated models for the prediction of the specified sound sources. Saves models."
     )
     parser.add_argument(
         "--data_path",
