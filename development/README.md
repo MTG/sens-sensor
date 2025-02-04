@@ -403,22 +403,20 @@ As specified, we re-generate the models trained in section <a href="#us8k---soun
 
    1) Extend US8k **generated** dataset for extension with 1000 random audios from IDMT 
         
-        <a href="Sources_IDMT_dataset_Generation.ipynb">Sources_IDMT_dataset_Generation.ipynb</a> offers a guide of the extension. It reads UrbanSound8K_CLAP_dataset.csv, adding all zeros column for "vehicles_IDMT". Then, 1000 random audios are selected from IDMT dataset and divided into each of the 10 folds of US8k dataset, 100 audios per fold. Their CLAP embeddings are generated and are added to US8k_CLAP with 1 or 0 in "vehicles_IDMT" column depending on the presence of the sound source in the audio. Remember that, a new source and column "construction" is formed by the mapping of the sources "drilling" or "jackhammer". The output is  IDMT-US8k_CLAP_dataset.csv.
+        <a href="Sources_IDMT_dataset_Generation.ipynb">Sources_IDMT_dataset_Generation.ipynb</a> offers a guide of the extension. It reads UrbanSound8K_CLAP_dataset.csv, adding all zeros column called "vehicles_IDMT". Then, 1000 random audios are selected from IDMT dataset and divided into the 10 folds of US8k dataset (100 audios per fold). The CLAP embeddings are generated and added to US8k generated dataset with 1 in "vehicles_IDMT" column if audio belongs to IDMT. The output is  IDMT-US8k_CLAP_dataset.csv.
         ``` 
         # sens-sensor/data tree
           ├── data
           │   ├── files
-          │   │   ├── US8k_CLAP_dataset.csv
+          │   │   ├── IDMT-US8k_CLAP_dataset.csv
 
         ```
 
     2) Train model
    
-        <a href="Sources_US8k_model_Training.py">Sources_US8k_model_Training.py</a> trains models for predicting the corresponding source, respectively, using the algorithms indicated in the python file.
+        <a href="Sources_US8k_model_Training.py">Sources_US8k_model_Training.py</a> trains models for predicting the corresponding source, respectively, using the algorithms indicated in the python file. **NOTE: You must change paths to the ones indicated with "# TO INCLUDE IDMT VEHICLES" so that this code includes the dataset generated that combines US8K and IDMT**
 
-        **NOTE: change paths to the ones indicated with "# TO INCLUDE IDMT VEHICLES"**
-
-        It must be run in the command line with
+        Then, it must be run in the command line with
 
         ```
         python development/Sources_US8k_model_Training.py --data_path path/to/data/folder
