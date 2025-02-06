@@ -77,6 +77,7 @@ def send_server():
                             content = json.load(file)
 
                         # Sensor status
+                        print(counter_status)
                         if counter_status == 0:
                             sensor_info = gather_raspberry_pi_info()
                             content["sensor_info"] = sensor_info
