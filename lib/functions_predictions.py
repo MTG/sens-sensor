@@ -93,9 +93,9 @@ def perform_prediction(
 
     # SINGLE FILE ANALYSIS
     txt_file_path = file_path
-    #txt_file_name= file_path.split("_")[-1].split(".txt")[0]
+    # txt_file_name= file_path.split("_")[-1].split(".txt")[0]
     # Load audio data
-    audio_file_path = files_path[-1] #file_path.split(".txt")[0] + ".pkl"
+    audio_file_path = files_path[-1]  # file_path.split(".txt")[0] + ".pkl"
     print(f"txt file {txt_file_path}")
     print(f"audio file {audio_file_path}")
     print("size ", os.path.getsize(audio_file_path))
@@ -176,63 +176,6 @@ def perform_prediction(
     )
     print(f"Prediction took {(end_pred_time-start_pred_time)} seconds")
 
-    """ # PREDICTIONS
-    all_predictions = [
-        "birds",
-        "construction",
-        "dogs",
-        "human",
-        "music",
-        "nature",
-        "siren",
-        "vehicles",
-        "P",
-        "E",
-    ]
-    predictions = []
-    for model in all_predictions:
-        if model in models_predictions:
-            # This model is desired
-            if model in sources:
-                # Model is a source type
-                prediction = models_predictions[model].predict_proba(features_single)[
-                    0
-                ][1]
-                predictions.append(prediction)
-            else:
-                # Model is P or E
-                prediction_inst = models_predictions[model].predict(features_single)[0]
-                predictions.append(prediction_inst)
-                prediction_intg = models_predictions[model].predict(features_group)[0]
-                predictions.append(prediction_intg)
-        else:
-            # This model is not desired, write 0
-            if model in sources:
-                predictions.append(0)
-            else:
-                predictions.append(0)  # for inst
-                predictions.append(0)  # for intg
-
-    # Format the predictions into a string
-    prediction_str = ";".join([f"{pred:.2f}" for pred in predictions])
-
-    # Complete preditions line
-    tzinfo = zoneinfo.ZoneInfo(time.tzname[0])
-    current_timestamp = datetime.datetime.now(tzinfo).replace(microsecond=0)
-    measure_timestamp = extract_timestamp(file_name=txt_file_name)
-    output_line = f"{prediction_str};{Leq};{LAeq};{measure_timestamp.isoformat()}"
-
-    # Save predictions vector in file
-    file_name = "predictions_" + measure_timestamp.strftime("%Y%m%d_%H%M%S") + ".txt"
-    txt_file_path = os.path.join(saving_folder_path, file_name)
-    with open(txt_file_path, "w") as file:
-        file.write(output_line)
-    end_pred_time = time.time()
-    print(
-        f"Predictions added to local txt file, time diff {(current_timestamp-measure_timestamp).total_seconds()} seconds"
-    )
-    print(f"Prediction took {(end_pred_time-start_pred_time)} seconds") """
-
 
 def initiate(model_CLAP_path, models_predictions_path, pca_path):
     # region MODEL LOADING #######################
@@ -288,6 +231,16 @@ def sensor_work():
     audios_folder_path = pm.audios_folder_path
     n_segments = pm.n_segments_intg
 
+    # Load LAeq limit
+    LAeq_limit = 0
+    try:
+        with open(pm.sensor_dB_limit_path, "r") as f:
+            LAeq_limit = float(f.read().strip())
+    except FileNotFoundError:
+        print(
+            "dB_limit.txt not found. Please create a file named sensor_id.txt in the same directory and write the sensor ID in it."
+        )
+
     # Configure LEDs
     GPIO.setmode(GPIO.BCM)  # Set up GPIO mode
     for pin in led_pins:  # Set up each LED pin as an output
@@ -326,12 +279,17 @@ def sensor_work():
         files_path.sort()
 
         # Take most recent txt file for analysis
-        audio_single_file_path = files_path[-1] # Latest audio path
-        single_file_path=audio_single_file_path.replace(".pkl", ".txt") # Latest text path
+        audio_single_file_path = files_path[-1]  # Latest audio path
+        single_file_path = audio_single_file_path.replace(
+            ".pkl", ".txt"
+        )  # Latest text path
 
         # Is it new?
         if single_file_path != prev_file:
-            if os.path.getsize(single_file_path) >= 9 and os.path.getsize(audio_single_file_path) >= 960163:  # txt files contain 9 characters
+            if (
+                os.path.getsize(single_file_path) >= 9
+                and os.path.getsize(audio_single_file_path) >= 960163
+            ):  # txt files contain 9 characters
                 print("New file!")
 
                 # Read measured LAeq to see if prediction needs to be done
@@ -340,7 +298,7 @@ def sensor_work():
                     # Leq = float(content[0])
                     LAeq = float(content[1])
 
-                if LAeq >= pm.LAeq_limit:
+                if LAeq >= LAeq_limit:
                     # Then do prediction, otherwise, don't
                     print("LAeq above limits. Predict!")
 
@@ -357,15 +315,15 @@ def sensor_work():
 
                     # Perform prediction
                     perform_prediction(
-                        file_path=single_file_path, # latest txt file path
-                        files_path=files_path, # latests audio paths
+                        file_path=single_file_path,  # latest txt file path
+                        files_path=files_path,  # latests audio paths
                         model_CLAP=model_CLAP,
                         models_predictions=models_predictions,
                         pca=pca,
                     )
                 else:
                     print(
-                        f"{single_file_path} file --> Laeq={LAeq}dBA does not reach limit {pm.LAeq_limit}dBA. No prediction."
+                        f"{single_file_path} file --> Laeq={LAeq}dBA does not reach limit {LAeq_limit}dBA. No prediction."
                     )
 
                 # Either way, this file already was analised

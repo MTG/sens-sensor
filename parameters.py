@@ -1,6 +1,7 @@
 # SENSOR DATA
 sensor_id_path = "../sensor_id.txt"
 sensor_location_path = "../location.txt"
+sensor_dB_limit_path = "../dB_limit.txt"
 
 # CONNECTION DATA
 ip = "10.42.0.48"
@@ -80,7 +81,7 @@ mic_calib = 1
 # CONFIGURATIONS
 segment_length = 3
 n_segments_intg = 10
-LAeq_limit = 50
+LAeq_limit = 40
 
 # PINS ASSIGNMENT
 yellow = 20
