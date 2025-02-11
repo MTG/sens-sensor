@@ -329,6 +329,6 @@ def sensor_work():
                 # Either way, this file already was analised
                 prev_file = single_file_path
 
-        time.sleep(0.1)
+        time.sleep(0.2)
         # print("Waiting...")
         turn_leds_off(GPIO, led_pins)  # Turn off LEDs
