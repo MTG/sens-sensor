@@ -7,9 +7,10 @@ In the following chart you can find a quick summary of the models generated and 
 
 | Original Dataset                     | Used for training models that predict...                                                                                  | Link to section                                                          |
 | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| ARAUS dataset                        | pleasantness, eventfulness                                                                                                | <a href="#araus---pleasantness-and-eventfulness-prediction">Section </a> |
+| ARAUS Dataset                        | pleasantness, eventfulness                                                                                                | <a href="#araus---pleasantness-and-eventfulness-prediction">Section </a> |
 | Urban Sound Monitoring (USM) Dataset | birds, construction, dogs, human, music, nature, siren, vehicles                                                          | <a href="#usm---sound-sources-prediction">Section </a>                   |
 | UrbanSound8k Dataset (US8k)          | air conditioner, car horn, children playing, dog bark, drilling, engine idling, gun shot, jackhammer, siren, street music | <a href="#us8k---sound-sources-prediction">Section </a>                  |
+| IDMT Traffic Dataset                 | vehicles in general                                                                                                       | <a href="#idmt---sound-sources-prediction">Section </a>                  |
 
 
 
@@ -261,7 +262,7 @@ The following bullet points constitute the keys for the development of these mod
 
 
 ## Reproducibility of model creation
-In order to reproduce the creation of the models for predicting the sound sources birds, construction, dogs, human, music, nature, siren, vehicles; the following steps need to be followed, indicated with the neccessary instructions and code:
+In order to reproduce the creation of the models for predicting the sound sources air conditioner, car horn, children playing, dog bark, drilling, engine idling, gun shot, jackhammer, siren, street music; the following steps need to be followed, indicated with the neccessary instructions and code:
 
 1) Download US8k dataset <a href="https://urbansounddataset.weebly.com/urbansound8k.html"> US8k webpage </a>. Once installation processed is completed and the necessary files have been downloaded as indicated, locate them in the data folder:
 
@@ -357,6 +358,100 @@ In order to reproduce the creation of the models for predicting the sound source
         │   │   │   ├── street_music.joblib
         │   │   │   └── street_music_model_info.txt
         ```
+
+## IDMT - SOUND SOURCES PREDICTION
+The trained model for predicting the presence of vehicles (see section <a href="#usm---sound-sources-prediction">USM dataset</a>) did not perform correctly in the sensor. Vehicles were confused for noisy sounds in general. Therefore, we selected IDMT traffic dataset, which contains audios of cars, motorbikes and other vehicles, and mixed it with US8K dataset (because it contains noisy sounds like air conditioner, drilling, engine idling... so that the models learn to differenciate one to another).
+
+The following bullet points constitute the keys for the development of these models.
+
+- **Dataset** 
+  
+  We use a selection of 1000 audios proposed in <a href="https://www.idmt.fraunhofer.de/en/publications/datasets/traffic.html"> IDMT Traffic dataset </a>. 
+
+- **Features** 
+  
+  <a href="https://github.com/LAION-AI/CLAP">LAION-AI's CLAP model</a> is used to generate the sound representations for the audios. In particular, we use LAION-AI's pre-trained model *630k-fusion-best.pt*.
+
+  ```
+  # sens-sensor/data tree
+  ├── data
+  │   ├── models
+  │   │   ├── 630k-fusion-best.pt
+  ```
+
+
+## Reproducibility of model creation
+As specified, we re-generate the models trained in section <a href="#us8k---sound-sources-prediction">US8K dataset</a> adding to the training data 1000 audios from IDMT dataset. In order to reproduce the creation of the models for predicting the sound sources found in US8k (air conditioner, car horn, children playing, dog bark, drilling, engine idling, gun shot, jackhammer, siren, street music) + vehicles from IDMT ; the following steps need to be followed, indicated with the neccessary instructions and code:
+
+1) Download IDMT dataset <a href="https://www.idmt.fraunhofer.de/en/publications/datasets/traffic.html"> IDMT dataset webpage </a>. Once installation processed is completed and the necessary files have been downloaded as indicated, locate them in the data folder:
+
+   ``` 
+    # sens-sensor/data tree
+    ├── data
+    │   ├── IDMT_Traffic
+    │   │   ├── annotation 
+    │   │   ├── audios
+    │   │   └── readme.md
+
+   ```
+   **From IDMT dataset we are only making use of the WAV files**
+
+
+2) After some research (see <a href="#references">References section</a>), CLAP embeddings demonstrated strong performance in terms of prediction accuracy and suitability for real-time processing. The steps below determine the guide to obtain the dataset to train the models.
+   
+   *NOTE: Set up your environment following the instructions in <a href="#environment-configuration">Environment configuration section</a>.*
+
+   1) Extend US8k **generated** dataset for extension with 1000 random audios from IDMT 
+        
+        <a href="Sources_IDMT_dataset_Generation.ipynb">Sources_IDMT_dataset_Generation.ipynb</a> offers a guide of the extension. It reads UrbanSound8K_CLAP_dataset.csv, adding all zeros column called "vehicles_IDMT". Then, 1000 random audios are selected from IDMT dataset and divided into the 10 folds of US8k dataset (100 audios per fold). The CLAP embeddings are generated and added to US8k generated dataset with 1 in "vehicles_IDMT" column if audio belongs to IDMT. The output is  IDMT-US8k_CLAP_dataset.csv.
+        ``` 
+        # sens-sensor/data tree
+          ├── data
+          │   ├── files
+          │   │   ├── IDMT-US8k_CLAP_dataset.csv
+
+        ```
+
+    2) Train model
+   
+        <a href="Sources_US8k_model_Training.py">Sources_US8k_model_Training.py</a> trains models for predicting the corresponding source, respectively, using the algorithms indicated in the python file. **NOTE: You must change paths to the ones indicated with "# TO INCLUDE IDMT VEHICLES" so that this code includes the dataset generated that combines US8K and IDMT**
+
+        Then, it must be run in the command line with
+
+        ```
+        python development/Sources_US8k_model_Training.py --data_path path/to/data/folder
+        ```
+        This will result in the following files:
+        ```
+        ├── data
+        │   ├── models
+        │   │   └── sources_IDMT-US8k
+        │   │   │   ├── air_conditioner.joblib
+        │   │   │   ├── air_conditioner_model_info.txt
+        │   │   │   ├── car_horn.joblib
+        │   │   │   ├── car_horn_model_info.txt
+        │   │   │   ├── children_playing.joblib
+        │   │   │   ├── children_playing_model_info.txt
+        │   │   │   ├── construction.joblib
+        │   │   │   ├── construction_model_info.txt
+        │   │   │   ├── dog_bark.joblib
+        │   │   │   ├── dog_bark_model_info.txt
+        │   │   │   ├── drilling.joblib
+        │   │   │   ├── drilling_model_info.txt
+        │   │   │   ├── engine_idling.joblib
+        │   │   │   ├── engine_idling_model_info.txt
+        │   │   │   ├── gun_shot.joblib
+        │   │   │   ├── gun_shot_model_info.txt
+        │   │   │   ├── jackhammer.joblib
+        │   │   │   ├── jackhammer_model_info.txt
+        │   │   │   ├── siren.joblib
+        │   │   │   ├── siren_model_info.txt
+        │   │   │   ├── street_music.joblib
+        │   │   │   ├── street_music_model_info.txt
+        │   │   │   ├── vehicles_IDMT.joblib            **** NEW
+        │   │   │   └── vehicles_IDMT_model_info.txt    **** NEW
+        ```
+
 ## PCA transformation
 The very same procedures that where presented in the sections above can be performed with or without PCA transformation applied to the 512-length CLAP embedding generated, resulting in a 50-length input vector to the models.
 

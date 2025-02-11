@@ -77,6 +77,7 @@ def send_server():
                             content = json.load(file)
 
                         # Sensor status
+                        print(counter_status)
                         if counter_status == 0:
                             sensor_info = gather_raspberry_pi_info()
                             content["sensor_info"] = sensor_info
@@ -95,7 +96,7 @@ def send_server():
                                 print(f"Deleted.")
                                 turn_leds_on(GPIO, led_pins)  # Turn on LEDs
                                 # Update counter status
-                                counter_status = +1
+                                counter_status = counter_status + 1
                                 if counter_status >= status_every:
                                     counter_status = 0
                             else:
