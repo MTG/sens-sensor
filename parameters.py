@@ -87,6 +87,7 @@ LAeq_limit = 40
 yellow = 20
 red = 21
 green = 16
+watchdog = 12
 
 # Check for sensor status every 10 messages
 status_every = 10
