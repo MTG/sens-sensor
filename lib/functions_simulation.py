@@ -47,10 +47,10 @@ def send_to_server(content, sensor_id, location):
     # Create dictionary for "sources" and the rest of the keys
     content = {
         "sources": dict(zip(pm.sources, values[:8])),
-        "pleasantness_inst": values[8],
-        "pleasantness_intg": values[9],
-        "eventfulness_inst": values[10],
-        "eventfulness_intg": values[11],
+        "P_inst": values[8],
+        "P_intg": values[9],
+        "E_inst": values[10],
+        "E_intg": values[11],
         "leq": values[12],
         "LAeq": values[13],
         "datetime": values[14],
@@ -199,10 +199,10 @@ def sensor_processing(
             "nature",
             "siren",
             "vehicles",
-            "pleasantness_inst",
-            "pleasantness_intg",
-            "eventfulness_inst",
-            "eventfulness_intg",
+            "P_inst",
+            "P_intg",
+            "E_inst",
+            "E_intg",
             "leq",
             "LAeq",
             "date_time",
@@ -353,19 +353,19 @@ def sensor_processing(
 
             # Generate and save plots
             config = {
-                "pleasantness_inst": {
+                "P_inst": {
                     "threshold": 0,
                     "color-line": "#111111",
                 },
-                "pleasantness_intg": {
+                "P_intg": {
                     "threshold": 0,
                     "color-line": "#111111",
                 },
-                "eventfulness_inst": {
+                "E_inst": {
                     "threshold": 0,
                     "color-line": "#111111",
                 },
-                "eventfulness_intg": {
+                "E_intg": {
                     "threshold": 0,
                     "color-line": "#111111",
                 },
@@ -419,19 +419,19 @@ def sensor_processing(
                 },
             }
             config_processed = {
-                "pleasantness_inst": {
+                "P_inst": {
                     "threshold": 0,
                     "color-line": "#000000",
                 },
-                "pleasantness_intg": {
+                "P_intg": {
                     "threshold": 0,
                     "color-line": "#000000",
                 },
-                "eventfulness_inst": {
+                "E_inst": {
                     "threshold": 0,
                     "color-line": "#000000",
                 },
-                "eventfulness_intg": {
+                "E_intg": {
                     "threshold": 0,
                     "color-line": "#000000",
                 },

@@ -125,8 +125,9 @@ def get_data_for_sensor_id(sensor_id, start_date=None, end_date=None):
     # Example usage:
     # get_data_for_sensor_id(sensor_id='sensor1')
     # get_data_for_sensor_id(sensor_id='sensor1', start_date=datetime.datetime(2023,1,1), end_date=datetime.datetime(2025,3,5,22,13))
-    url = API_BASE_URL + f"/sensor-data/{sensor_id}/"
+    url = API_BASE_URL + f"/download-sensor-data/{sensor_id}/"
     if start_date and end_date:
         url += f"time-range/?start_date={start_date}&end_date={end_date}"
+    print("URL OF REQUEST ", url)
     response = requests.get(url, timeout=10)
     return response.json()

@@ -30,16 +30,16 @@ def transform_sources(row, config):
 
 
 def transform_pleasantness_eventfulness(row):
-    # Pleasantness_intg and eventfulness_intg
-    if row["pleasantness_intg"] > 0:
-        row["pleasantness_intg"] = 1
+    # P_intg and E_intg
+    if row["P_intg"] > 0:
+        row["P_intg"] = 1
     else:
-        row["pleasantness_intg"] = -1
+        row["P_intg"] = -1
 
-    if row["eventfulness_intg"] > 0:
-        row["eventfulness_intg"] = 1
+    if row["E_intg"] > 0:
+        row["E_intg"] = 1
     else:
-        row["eventfulness_intg"] = -1
+        row["E_intg"] = -1
 
     return row
 
@@ -56,10 +56,10 @@ def general_plots(df, saving_path, start_str, end_str, config, fontsizes):
         threshold = config[col]["threshold"]
 
         if col in [
-            "pleasantness_inst",
-            "pleasantness_intg",
-            "eventfulness_inst",
-            "eventfulness_intg",
+            "P_inst",
+            "P_intg",
+            "E_inst",
+            "E_intg",
         ]:
             window_size = 1
             plt.ylim(-1, 1)
@@ -105,6 +105,7 @@ def general_plots(df, saving_path, start_str, end_str, config, fontsizes):
             # Y-axis limits
             plt.ylim(0, 1)
             # Color fill
+            print("col ", col)
             ax.fill_between(
                 df["elapsed_time"],
                 df[col],  # 1  or df[col]
@@ -176,18 +177,18 @@ def soundlight_plot_PE(df, fontsizes, saving_path):
     # soundlights graph P and E
     """ ax.plot(
         df["elapsed_time"],
-        df["pleasantness_intg"].rolling(window=1, center=True).mean(),
+        df["P_intg"].rolling(window=1, center=True).mean(),
         linewidth=1,
-        color=config["pleasantness_intg"]["color-line"],
-        label="pleasantness_intg",
+        color=config["P_intg"]["color-line"],
+        label="P_intg",
         linestyle="solid",
     ) 
     ax.plot(
         df["elapsed_time"],
-        df["eventfulness_intg"].rolling(window=1, center=True).mean(),
+        df["E_intg"].rolling(window=1, center=True).mean(),
         linewidth=1,
-        color=config["eventfulness_intg"]["color-line"],
-        label="eventfulness_intg",
+        color=config["E_intg"]["color-line"],
+        label="E_intg",
         linestyle="dashed",
     )"""
 
@@ -197,7 +198,7 @@ def soundlight_plot_PE(df, fontsizes, saving_path):
         df["elapsed_time"],
         1,  # 1
         -1,
-        where=((df["pleasantness_intg"] >= 0) & (df["eventfulness_intg"] <= 0)),
+        where=((df["P_intg"] >= 0) & (df["E_intg"] <= 0)),
         color="green",
         alpha=0.2,
         label="Pleasant and Uneventful",
@@ -207,7 +208,7 @@ def soundlight_plot_PE(df, fontsizes, saving_path):
         df["elapsed_time"],
         1,  # 1
         -1,
-        where=((df["pleasantness_intg"] >= 0) & (df["eventfulness_intg"] >= 0)),
+        where=((df["P_intg"] >= 0) & (df["E_intg"] >= 0)),
         color="green",
         alpha=0.5,
         label="Pleasant and Eventful",
@@ -217,7 +218,7 @@ def soundlight_plot_PE(df, fontsizes, saving_path):
         df["elapsed_time"],
         1,  # 1
         -1,
-        where=((df["pleasantness_intg"] <= 0) & (df["eventfulness_intg"] >= 0)),
+        where=((df["P_intg"] <= 0) & (df["E_intg"] >= 0)),
         color="red",
         alpha=0.5,
         label="Unpleasant and Eventful",
@@ -227,7 +228,7 @@ def soundlight_plot_PE(df, fontsizes, saving_path):
         df["elapsed_time"],
         1,  # 1
         -1,
-        where=((df["pleasantness_intg"] <= 0) & (df["eventfulness_intg"] <= 0)),
+        where=((df["P_intg"] <= 0) & (df["E_intg"] <= 0)),
         color="red",
         alpha=0.2,
         label="Unpleasant and Uneventful",
@@ -245,8 +246,8 @@ def soundlight_plot_PE(df, fontsizes, saving_path):
     ax.legend(fontsize=fontsizes["legend"])
 
     # Add a text box with percentage above threshold
-    """ percentage_P = (df["pleasantness_intg"] > 0).mean() * 100
-    percentage_E = (df["eventfulness_intg"] > 0).mean() * 100
+    """ percentage_P = (df["P_intg"] > 0).mean() * 100
+    percentage_E = (df["E_intg"] > 0).mean() * 100
     text_box = f"Pleasantness: {percentage_P:.2f}%\nEventfulness: {percentage_E:.2f}%"
     plt.text(
         0.93,
@@ -326,8 +327,8 @@ def quadrands_PE_plot(df, fontsizes, saving_path):
     fig, ax = plt.subplots(figsize=(16, 9))
 
     # Extract the columns
-    x = df["pleasantness_intg"]
-    y = df["eventfulness_intg"]
+    x = df["P_intg"]
+    y = df["E_intg"]
 
     # Determine axis limits
     x_limit = max(abs(x.min()), abs(x.max()), 0.5)
@@ -395,19 +396,19 @@ def quadrands_PE_plot(df, fontsizes, saving_path):
 def get_data_from_sensor(start, end, sensorId, saving_path):
 
     config = {
-        "pleasantness_inst": {
+        "P_inst": {
             "threshold": 0,
             "color-line": "#111111",
         },
-        "pleasantness_intg": {
+        "P_intg": {
             "threshold": 0,
             "color-line": "#111111",
         },
-        "eventfulness_inst": {
+        "E_inst": {
             "threshold": 0,
             "color-line": "#111111",
         },
-        "eventfulness_intg": {
+        "E_intg": {
             "threshold": 0,
             "color-line": "#111111",
         },
@@ -461,19 +462,19 @@ def get_data_from_sensor(start, end, sensorId, saving_path):
         },
     }
     config_processed = {
-        "pleasantness_inst": {
+        "P_inst": {
             "threshold": 0,
             "color-line": "#000000",
         },
-        "pleasantness_intg": {
+        "P_intg": {
             "threshold": 0,
             "color-line": "#000000",
         },
-        "eventfulness_inst": {
+        "E_inst": {
             "threshold": 0,
             "color-line": "#000000",
         },
-        "eventfulness_intg": {
+        "E_intg": {
             "threshold": 0,
             "color-line": "#000000",
         },
@@ -550,10 +551,10 @@ def get_data_from_sensor(start, end, sensorId, saving_path):
         json_data = data["data"]
         # Extraemos los datos planos
         row = {
-            "pleasantness_inst": float(json_data["pleasantness_inst"]),
-            "pleasantness_intg": float(json_data["pleasantness_intg"]),
-            "eventfulness_inst": float(json_data["eventfulness_inst"]),
-            "eventfulness_intg": float(json_data["eventfulness_intg"]),
+            "P_inst": float(json_data["P_inst"]),
+            "P_intg": float(json_data["P_intg"]),
+            "E_inst": float(json_data["E_inst"]),
+            "E_intg": float(json_data["E_intg"]),
             "leq": float(json_data["leq"]),
             "LAeq": float(json_data["LAeq"]),
         }

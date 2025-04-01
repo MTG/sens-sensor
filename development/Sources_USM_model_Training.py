@@ -18,12 +18,12 @@ def main(data_path):
     dataset_path = os.path.join(
         data_path, "files/USM_CLAP_dataset/USM_CLAP_dataset.json"
     )  # path to json file containing USM-extended
-    algorithms = {
+    algorithms ={
         "birds": "linear",
         "construction": "linear",
         "dogs": "linear",
         "human": "linear",
-        "music": "linear",
+        "music": "l_r",
         "nature": "linear",
         "siren": "linear",
         "vehicles": "l_r",
