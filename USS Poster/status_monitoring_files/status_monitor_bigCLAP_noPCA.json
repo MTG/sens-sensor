@@ -1,0 +1,1862 @@
+{
+    "0": {
+        "memory_info": {
+            "percent_used": 11.0
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 0.0,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 62.809
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:44:23"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "1": {
+        "memory_info": {
+            "percent_used": 11.0
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 0.0,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 62.809
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:44:27"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "2": {
+        "memory_info": {
+            "percent_used": 11.0
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 0.3,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 61.835
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:44:31"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "3": {
+        "memory_info": {
+            "percent_used": 11.0
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 0.0,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 61.835
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:44:35"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "4": {
+        "memory_info": {
+            "percent_used": 11.0
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 0.5,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 61.835
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:44:39"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "5": {
+        "memory_info": {
+            "percent_used": 12.4
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 59.4,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 63.783
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:44:43"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "6": {
+        "memory_info": {
+            "percent_used": 15.8
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 36.6,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 64.757
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:44:47"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "7": {
+        "memory_info": {
+            "percent_used": 19.6
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 42.5,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 64.27
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:44:51"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "8": {
+        "memory_info": {
+            "percent_used": 24.8
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 43.4,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 66.218
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:44:55"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "9": {
+        "memory_info": {
+            "percent_used": 27.7
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 53.0,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 68.166
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:44:59"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "10": {
+        "memory_info": {
+            "percent_used": 30.6
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 34.8,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 70.114
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:45:03"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "11": {
+        "memory_info": {
+            "percent_used": 33.9
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 30.6,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 68.166
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:45:07"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "12": {
+        "memory_info": {
+            "percent_used": 38.2
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 31.7,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 68.166
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:45:11"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "13": {
+        "memory_info": {
+            "percent_used": 42.8
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 41.3,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 68.653
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:45:15"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "14": {
+        "memory_info": {
+            "percent_used": 47.4
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 27.9,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 69.14
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:45:19"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "15": {
+        "memory_info": {
+            "percent_used": 52.0
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 27.7,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 68.166
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:45:23"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "16": {
+        "memory_info": {
+            "percent_used": 54.9
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 33.0,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 68.166
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:45:27"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "17": {
+        "memory_info": {
+            "percent_used": 59.7
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 34.7,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 68.166
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:45:31"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "18": {
+        "memory_info": {
+            "percent_used": 63.8
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 29.0,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 68.166
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:45:35"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "19": {
+        "memory_info": {
+            "percent_used": 67.6
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 31.7,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 67.679
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:45:39"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "20": {
+        "memory_info": {
+            "percent_used": 72.3
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 29.0,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 68.653
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:45:44"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "21": {
+        "memory_info": {
+            "percent_used": 76.9
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 30.0,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 67.679
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:45:48"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "22": {
+        "memory_info": {
+            "percent_used": 81.1
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 31.5,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 69.627
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:45:52"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "23": {
+        "memory_info": {
+            "percent_used": 85.7
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 31.8,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 68.166
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:45:56"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "24": {
+        "memory_info": {
+            "percent_used": 90.3
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 60.2,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 71.088
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:46:00"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "25": {
+        "memory_info": {
+            "percent_used": 78.8
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 32.5,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 69.627
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:46:04"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "26": {
+        "memory_info": {
+            "percent_used": 78.9
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 25.4,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 70.601
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:46:08"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "27": {
+        "memory_info": {
+            "percent_used": 78.9
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 25.2,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 69.627
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:46:12"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "28": {
+        "memory_info": {
+            "percent_used": 78.9
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 78.2,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 74.01
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:46:16"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "29": {
+        "memory_info": {
+            "percent_used": 79.0
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 84.1,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 74.01
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:46:20"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "30": {
+        "memory_info": {
+            "percent_used": 79.1
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 87.1,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 74.984
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:46:24"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "31": {
+        "memory_info": {
+            "percent_used": 79.0
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 90.0,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 74.984
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:46:28"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "32": {
+        "memory_info": {
+            "percent_used": 79.1
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 88.8,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 75.958
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:46:32"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "33": {
+        "memory_info": {
+            "percent_used": 79.1
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 84.4,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 76.932
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:46:36"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "34": {
+        "memory_info": {
+            "percent_used": 79.0
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 91.5,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 77.419
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:46:40"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "35": {
+        "memory_info": {
+            "percent_used": 79.1
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 74.0,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 78.393
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:46:44"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "36": {
+        "memory_info": {
+            "percent_used": 79.0
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 93.3,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 78.88
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:46:48"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "37": {
+        "memory_info": {
+            "percent_used": 79.1
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 84.6,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 78.88
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:46:52"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "38": {
+        "memory_info": {
+            "percent_used": 79.0
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 92.3,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 79.367
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:46:56"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "39": {
+        "memory_info": {
+            "percent_used": 79.1
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 86.3,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 79.367
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:47:00"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "40": {
+        "memory_info": {
+            "percent_used": 79.1
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 88.3,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 78.88
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:47:04"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "41": {
+        "memory_info": {
+            "percent_used": 79.1
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 87.7,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 80.341
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:47:08"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "42": {
+        "memory_info": {
+            "percent_used": 79.2
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 92.2,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 79.367
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:47:12"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "43": {
+        "memory_info": {
+            "percent_used": 79.2
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 89.1,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 80.341
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:47:16"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "44": {
+        "memory_info": {
+            "percent_used": 79.2
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 75.4,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 79.854
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:47:20"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "45": {
+        "memory_info": {
+            "percent_used": 79.2
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 91.5,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 82.289
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:47:24"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "46": {
+        "memory_info": {
+            "percent_used": 79.2
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 88.1,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 80.828
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:47:28"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "47": {
+        "memory_info": {
+            "percent_used": 79.2
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 89.2,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 82.776
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:47:32"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "48": {
+        "memory_info": {
+            "percent_used": 79.2
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 69.5,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 81.315
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:47:36"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "49": {
+        "memory_info": {
+            "percent_used": 79.2
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 93.1,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 82.289
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:47:40"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "50": {
+        "memory_info": {
+            "percent_used": 79.1
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 75.9,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 80.828
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:47:44"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "51": {
+        "memory_info": {
+            "percent_used": 17.1
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 32.3,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 77.906
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:47:48"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "52": {
+        "memory_info": {
+            "percent_used": 10.6
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 0.2,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 73.036
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:47:52"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "53": {
+        "memory_info": {
+            "percent_used": 10.6
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 0.0,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 71.088
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:47:56"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "54": {
+        "memory_info": {
+            "percent_used": 10.6
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 0.0,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 69.627
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:48:00"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "55": {
+        "memory_info": {
+            "percent_used": 10.6
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 0.2,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 69.627
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:48:04"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "56": {
+        "memory_info": {
+            "percent_used": 10.6
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 0.0,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 69.627
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:48:08"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "57": {
+        "memory_info": {
+            "percent_used": 10.6
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 0.2,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 67.192
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:48:12"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "58": {
+        "memory_info": {
+            "percent_used": 10.6
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 0.3,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 67.679
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:48:16"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    },
+    "59": {
+        "memory_info": {
+            "percent_used": 10.6
+        },
+        "cpu_info": {
+            "cpu_usage_percent": 0.0,
+            "cpu_count": 4
+        },
+        "temperature": {
+            "temperature_celsius": 67.192
+        },
+        "network_info": {
+            "hostname": "raspberrypi",
+            "ip_address": "127.0.1.1",
+            "interfaces": {
+                "lo": [
+                    "127.0.0.1"
+                ],
+                "wlan0": [
+                    "192.168.1.148"
+                ],
+                "eth0": []
+            }
+        },
+        "uptime": {
+            "uptime_readable": "0:48:20"
+        },
+        "disk_usage": {
+            "percent_used": 21.2
+        }
+    }
+}
