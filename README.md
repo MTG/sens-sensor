@@ -60,7 +60,7 @@ Follow instructions below (or <a href="https://www.enablegeek.com/tutorial/insta
 ```
 sudo apt-get update
 
-sudo apt-get install build-essential tk-dev libncurses5-dev libncursesw5-dev libreadline6-dev libdb5.3-dev libgdbm-dev libsqlite3-dev libssl-dev libbz2-dev libexpat1-dev liblzma-dev zlib1g-dev libffi-dev
+sudo apt-get install build-essential tk-dev libncurses5-dev libncursesw5-dev libreadline6-dev libdb5.3-dev libgdbm-dev libsqlite3-dev libssl-dev libbz2-dev libexpat1-dev liblzma-dev zlib1g-dev libffi-dev portaudio19-dev
 
 wget https://www.python.org/ftp/python/3.10.14/Python-3.10.14.tar.xz # or download directly from link above
 

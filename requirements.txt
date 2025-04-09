@@ -34,6 +34,7 @@ pooch==1.8.2
 progressbar==2.5
 protobuf==5.27.2
 psutil==6.0.0
+pyaudio
 pycparser==2.22
 pyparsing==3.2.0
 python-dateutil==2.9.0.post0
