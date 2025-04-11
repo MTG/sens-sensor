@@ -105,7 +105,7 @@ def send_server():
                                     print(f"Deleted.")
                                     # turn_leds_on(GPIO, led_pins)  # Turn on LEDs
                                     #### WATCHDOG code ###
-                                    # GPIO.output(watchdog_pin, GPIO.HIGH) # Send pulse
+                                    GPIO.output(watchdog_pin, GPIO.HIGH)  # Send pulse
                                     ####################
                                     # Update counter status
                                     counter_status = counter_status + 1
@@ -117,7 +117,7 @@ def send_server():
                                     )
                                     # turn_leds_off(GPIO, led_pins)
                                     #### WATCHDOG code ###
-                                    # GPIO.output(watchdog_pin, GPIO.LOW) # Stop pulse
+                                    GPIO.output(watchdog_pin, GPIO.LOW)  # Stop pulse
                                     ####################
                             else:
                                 print("No connection.")
