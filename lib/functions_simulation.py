@@ -17,6 +17,8 @@ import os
 import numpy as np
 import matplotlib
 import sys
+import time
+import pyaudio
 from maad.spl import pressure2leq
 from maad.util import mean_dB
 from scipy.signal import lfilter
@@ -165,6 +167,15 @@ def sensor_processing(
     ch = wf.getnchannels()
     sample_width = wf.getsampwidth()
 
+    # Initialize PyAudio
+    p = pyaudio.PyAudio()
+    stream = p.open(
+        format=p.get_format_from_width(wf.getsampwidth()),
+        channels=wf.getnchannels(),
+        rate=wf.getframerate(),
+        output=True,
+    )
+
     # Check sample width
     if sample_width == 1:
         dtype = np.uint8  # 8-bit unsigned
@@ -216,7 +227,9 @@ def sensor_processing(
         audio_folder = audio_file_path.split("/")[-2]
 
         # Declare folder where to save plots and predictions
-        saving_folder_audio_path = os.path.join(saving_folder_path, audio_name)
+        saving_folder_audio_path = (
+            saving_folder_path  # os.path.join(saving_folder_path, audio_name)
+        )
 
     # Read and process the audio stream
     try:
@@ -228,6 +241,9 @@ def sensor_processing(
                 break  # End of file reached
             # audio_data = stream.read(segment_samples)
             # audio_samples = np.frombuffer(audio_data, dtype=np.int16)
+
+            # Play the audio
+            stream.write(audio_samples)
 
             # Convert audio_samples to a NumPy array
             audio_samples = np.frombuffer(audio_samples, dtype=dtype)
@@ -331,6 +347,7 @@ def sensor_processing(
                     sensor_timestamp=predictions["datetime"],
                     save_to_disk=False,
                 )
+                print("prediction sent")
                 """ if response != True:
                     # Prediction was not sent - SAVE IT
                     # Create folder to save predictions. Check if folder exists, and if not, create it
@@ -347,6 +364,7 @@ def sensor_processing(
             # Prepare timestamp for next iteration
             timestamp = timestamp + datetime.timedelta(seconds=seconds_segment)
             elapsed_time = elapsed_time + seconds_segment
+            # time.sleep(seconds_segment)
 
         # Save plots and dataframe
         if "save" in action:
@@ -507,6 +525,10 @@ def sensor_processing(
             df.to_csv(os.path.join(saving_folder_audio_path, "data.csv"), index=False)
             print(f"DataFrame saved.")
 
+        # Cleanup
+        stream.stop_stream()
+        stream.close()
+        p.terminate()
     except KeyboardInterrupt:
         print("Processing interrupted.")
 

@@ -4,7 +4,7 @@ sensor_location_path = "../location.txt"
 sensor_dB_limit_path = "../dB_limit.txt"
 
 # CONNECTION DATA
-ip = "10.42.0.48"
+ip = "192.168.2.2"
 port = 65432
 
 # SOUND SOURCES AND PREDICTION MODELS
@@ -74,13 +74,16 @@ audios_folder_path = "../temporary_audios"
 predictions_folder_path = "../predictions"
 not_sent_predictions_folder_path = "../predictions_not_sent"
 
+# ERRORS REGISTER FILE PATH
+errors_path = "../error_logs.txt"
+
 # MIC CALIBRATION
 mic_calib_path = "../noisedata_admin/calib.txt"
 mic_calib = 1
 
 # CONFIGURATIONS
-segment_length = 3
-n_segments_intg = 10
+segment_length = 6
+n_segments_intg = 5
 LAeq_limit = 40
 
 # PINS ASSIGNMENT
