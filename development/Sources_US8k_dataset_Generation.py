@@ -12,17 +12,22 @@ print("src dir ", src_dir)
 sys.path.append(src_dir)
 
 # Imports from this project
-from development.lib.dataset_functions import generate_features_US8k
+from development.lib.dataset_functions import generate_features_US8k,generate_features_US8k_2s
 
 
 def main(data_path):
     # Inputs
     dataset_path = os.path.join(data_path, "files/UrbanSound8K_adapted.csv")
-    saving_folder = "files/UrbanSound8K_CLAP_dataset"
+    saving_folder = "files/UrbanSound8K_CLAP_dataset" # For 2 second US8K audios "files/UrbanSound8K_2s_CLAP_dataset"
 
     generate_features_US8k(
         data_path=data_path, dataset_path=dataset_path, saving_folder=saving_folder
     )
+
+    # For 2 second US8K audios
+    """generate_features_US8k_2s(
+        data_path=data_path, dataset_path=dataset_path, saving_folder=saving_folder
+    )"""
 
 
 if __name__ == "__main__":

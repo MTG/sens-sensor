@@ -15,6 +15,9 @@ import warnings
 from CLAP.src.laion_clap import CLAP_Module
 from scipy.signal import resample
 import sys
+import wave
+import matplotlib.pyplot as plt
+import soundfile as sf
 
 # Path importing
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -913,6 +916,123 @@ def generate_features_US8k(dataset_path, data_path, saving_folder):
         # Add new entry to JSON
         json_entries.append(entry)
 
+    # Check if the directory exists
+    if not os.path.exists(os.path.join(data_path, saving_folder)):
+        # If it doesn't exist, create it
+        os.makedirs(os.path.join(data_path, saving_folder))
+        print(f"Directory {os.path.join(data_path,saving_folder)} created.")
+
+    # Write the JSON entries to a file
+    with open(
+        os.path.join(data_path, saving_folder, "US8k_CLAP_dataset.json"), "w"
+    ) as f:
+        json.dump(json_entries, f, indent=4)
+
+    # Save  data to a CSV file
+    df_csv = pd.DataFrame(json_entries)
+    df_csv.to_csv(
+        os.path.join(data_path, saving_folder, "US8k_CLAP_dataset.csv"), index=False
+    )
+
+def load_wav_to_array_old(file_path):
+    print("File ", file_path)
+    # Open the wave file
+    with wave.open(file_path, 'rb') as wav_file:
+        n_channels = wav_file.getnchannels()
+        sampwidth = wav_file.getsampwidth()
+        framerate = wav_file.getframerate()
+        n_frames = wav_file.getnframes()
+        raw_data = wav_file.readframes(n_frames)
+
+    # Determine appropriate numpy dtype and max value for normalization
+    dtype_map = {1: np.uint8, 2: np.int16, 4: np.int32}
+    max_val_map = {1: 128, 2: 32768, 4: 2147483648}
+    
+    dtype = dtype_map[sampwidth]
+    max_val = max_val_map[sampwidth]
+
+    # Convert bytes to numpy array
+    audio_array = np.frombuffer(raw_data, dtype=dtype)
+
+    # Handle unsigned 8-bit special case
+    if sampwidth == 1:
+        audio_array = audio_array.astype(np.int16) - 128  # Convert unsigned to signed
+
+    # Normalize to [-1.0, 1.0]
+    audio_array = audio_array.astype(np.float32) / max_val
+
+    # Reshape for stereo
+    if n_channels > 1:
+        audio_array = audio_array.reshape(-1, n_channels)
+        # Take only mono
+        audio_array=audio_array[:,0]
+
+    # Plot waveform (first channel if stereo)
+    #plt.plot(audio_array)
+    #plt.title(f"Audio Waveform {file_path}")
+    #plt.show()
+
+    return audio_array, framerate
+
+def load_wav_to_array(file_path):
+    print("File ", file_path)
+
+    # Read file using soundfile
+    audio_array, fs = sf.read(file_path, dtype='float32')  # Ensures values are in [-1.0, 1.0]
+
+    # If multi-channel, take only the first channel (convert to mono)
+    if len(audio_array.shape) > 1:
+        audio_array = audio_array[:, 0]
+
+    # Plot waveform (first channel if stereo)
+    """plt.plot(audio_array)
+    plt.title(f"Audio Waveform {file_path}")
+    plt.show()"""
+
+
+    return audio_array, fs
+
+def generate_features_US8k_2s(dataset_path, data_path, saving_folder):
+    # Load the model
+    print("------- code starts -----------")
+    model = CLAP_Module(enable_fusion=True)
+    print("------- clap module -----------")
+    model.load_ckpt("data/models/630k-fusion-best.pt")
+    print("------- model loaded -----------")
+
+    # Read dataframe
+    df = pd.read_csv(dataset_path)
+    # Initialize empty list to store JSON entries
+    json_entries = []
+    # Iterate over rows and calculate CLAP features for each audio
+    for index, row in df.iterrows():
+        print(index + 1, "/8732")
+        audio_path = os.path.join(data_path, row["audio_path"])
+        # Read audio
+        audio_array,fs=load_wav_to_array(file_path=audio_path)
+        audio_length=len(audio_array)
+        # Cut audio to 2 seconds
+        samples_cut=2*fs
+        if(audio_length>samples_cut):
+            audio_array=audio_array[0:samples_cut]
+
+        # Get CLAP embedding
+        embedding = model.get_audio_embedding_from_data([audio_array], use_tensor=False)
+
+        
+        # print("Embedding calculated in ", duration_time_CLAP, " seconds")
+        # Create new entry
+        entry = row.to_dict()
+
+        # Expand the embeddings into separate columns
+        for i, name in enumerate(clap_features):
+            entry[name] = float(embedding[:,i])
+
+        #print(entry)
+
+        # Add new entry to JSON
+        json_entries.append(entry)
+    
     # Check if the directory exists
     if not os.path.exists(os.path.join(data_path, saving_folder)):
         # If it doesn't exist, create it
