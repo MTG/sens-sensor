@@ -3,7 +3,14 @@ import matplotlib.pyplot as plt
 import signal
 import sys
 
-INTERFACE="wlx3c52a1860ac4"
+import argparse
+
+# Parse command-line arguments
+parser = argparse.ArgumentParser(description="Monitor network data usage.")
+parser.add_argument("interface", help="Name of the network interface (e.g., wlan0, eth0)")
+args = parser.parse_args()
+
+INTERFACE=args.interface
 
 # Global data stores
 timestamps = []
