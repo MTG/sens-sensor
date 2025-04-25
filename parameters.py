@@ -82,8 +82,8 @@ mic_calib_path = "../noisedata_admin/calib.txt"
 mic_calib = 1
 
 # CONFIGURATIONS
-segment_length = 6
-n_segments_intg = 5
+segment_length = 3
+n_segments_intg = 10
 LAeq_limit = 40
 
 # PINS ASSIGNMENT

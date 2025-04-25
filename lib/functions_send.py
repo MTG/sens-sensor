@@ -142,6 +142,117 @@ def send_server():
         print("Adios")
 
 
+def send_server_batch():
+
+    # Get parameters needed
+    led_pins = [pm.red]  # Define GPIO pins for each LED
+    folder_path = pm.predictions_folder_path
+    status_every = pm.status_every
+    errors_path = pm.errors_path
+
+    # Configure LEDs
+    GPIO.setmode(GPIO.BCM)  # Set up GPIO mode
+    # 20--> Yellow
+    # 21--> Red
+    # 16--> Green
+    for pin in led_pins:  # Set up each LED pin as an output
+        GPIO.setup(pin, GPIO.OUT)
+
+    #### WATCHDOG code ###
+    watchdog_pin = pm.watchdog
+    GPIO.setup(watchdog_pin, GPIO.OUT)
+    ####################
+
+    # Counter for sending sensor status updates
+    counter_status = 0
+
+    # Read predictions, send them and delete them once sent
+    try:
+        while True:
+            # Get latest file
+            file_pattern = "*.json"  # file_pattern = "*.txt"
+            files = glob.glob(os.path.join(folder_path, file_pattern))
+            if len(files) != 0:
+                # There are files!
+                files.sort()
+                most_recent = files[-1]
+                data_list=[] # to accumulate jsons of data
+                files_list=[]
+                # Check if most recent file is not empty
+                if os.path.getsize(most_recent) > 0:
+                    for single_file in files:
+                        print("file ", single_file)
+                        # Check if file is not empty
+                        if os.path.getsize(single_file) > 0:
+                            # File has content
+                            # Read and send content
+                            with open(single_file, "r") as file:
+                                content = json.load(file)
+
+                            # Sensor status
+                            print(counter_status)
+                            if counter_status == 0:
+                                sensor_info = gather_raspberry_pi_info()
+                                content["sensor_info"] = sensor_info
+
+                            # add to list of messages(dicts)
+                            data_list.append(content)
+                            files_list.append(single_file)
+
+                        else:
+                            # File is old and empty! Delete to not accumulate!
+                            os.remove(single_file)
+                            log_text = (
+                                f"Send process: Deleted because empty --> {single_file}"
+                            )
+                            update_logs_file(errors_path, log_text)
+
+                    # Send list of dict
+                    response = client.post_sensor_data(
+                        data=data_list,
+                        sensor_timestamp=content["datetime"],
+                        save_to_disk=False,
+                    )
+
+                    if response != False:  # Connection is good
+                        if response.ok == True:  # File sent
+                            for single_file in files_list:
+                                print(f"Prediction sent - {single_file}")
+                                # Proceed to delete sent file
+                                os.remove(single_file)
+                                print(f"Deleted.")
+                                # turn_leds_on(GPIO, led_pins)  # Turn on LEDs
+                                #### WATCHDOG code ###
+                                GPIO.output(watchdog_pin, GPIO.HIGH)  # Send pulse
+                                ####################
+                                # Update counter status
+                                counter_status = counter_status + 1
+                                if counter_status >= status_every:
+                                    counter_status = 0
+                        else:
+                            print(
+                                f"Files could not be sent. Server response: {response}"
+                            )
+                            # turn_leds_off(GPIO, led_pins)
+                            #### WATCHDOG code ###
+                            GPIO.output(watchdog_pin, GPIO.LOW)  # Stop pulse
+                            ####################
+                    else:
+                        print("No connection.")
+
+            # If nothing to send, turn off
+            # print("waiting...")
+            turn_leds_off(GPIO, led_pins)
+            #### WATCHDOG code ###
+            GPIO.output(watchdog_pin, GPIO.LOW)  # Stop pulse
+            ####################
+
+            time.sleep(60) # wait to accumulate messages for a minute
+
+    finally:
+        print("Adios")
+
+
 def update_logs_file(file_path, new_content):
     # Check if the file exists
     if not os.path.exists(file_path):
