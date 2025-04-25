@@ -194,7 +194,12 @@ def send_server_batch():
                             if counter_status == 0:
                                 sensor_info = gather_raspberry_pi_info()
                                 content["sensor_info"] = sensor_info
+                                # Update counter status
+                                counter_status = counter_status + 1
+                                if counter_status >= status_every:
+                                    counter_status = 0
 
+                            content=client.post_sensor_data_nosend(content, sensor_timestamp=content["datetime"], save_to_disk=False,)
                             # add to list of messages(dicts)
                             data_list.append(content)
                             files_list.append(single_file)
@@ -208,10 +213,8 @@ def send_server_batch():
                             update_logs_file(errors_path, log_text)
 
                     # Send list of dict
-                    response = client.post_sensor_data(
+                    response = client.post_sensor_data_send(
                         data=data_list,
-                        sensor_timestamp=content["datetime"],
-                        save_to_disk=False,
                     )
 
                     if response != False:  # Connection is good
@@ -225,10 +228,7 @@ def send_server_batch():
                                 #### WATCHDOG code ###
                                 GPIO.output(watchdog_pin, GPIO.HIGH)  # Send pulse
                                 ####################
-                                # Update counter status
-                                counter_status = counter_status + 1
-                                if counter_status >= status_every:
-                                    counter_status = 0
+                                
                         else:
                             print(
                                 f"Files could not be sent. Server response: {response}"

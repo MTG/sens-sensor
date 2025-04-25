@@ -49,6 +49,34 @@ def save_posted_data_to_disk(data):
     with open(os.path.join(LOCAL_COPY_DATA_PATH, filename), "w") as f:
         json.dump(data, f)
 
+def post_sensor_data_nosend(data, sensor_timestamp=None, save_to_disk=True):
+
+    if sensor_timestamp is None:
+        sensor_timestamp = datetime.datetime.now().replace(microsecond=0).isoformat()
+    data = {
+        "uuid": str(uuid.uuid4()),  # Generate unique uuid for data point
+        "sensor_timestamp": sensor_timestamp,  # .isoformat(), # DELETED BECAUSE ALREADY DONE
+        "sensor_id": SENSOR_ID,
+        "location": LOCATION,
+        "data": data,
+    }
+    if save_to_disk:
+        save_posted_data_to_disk(data)
+
+    return data
+
+def post_sensor_data_send(data):
+   
+    url = API_BASE_URL + "/sensor-data/"
+    headers = {"Content-Type": "application/json"}
+    
+    # Send to server
+    try:
+        response = requests.post(url, headers=headers, json=data, timeout=10)
+    except requests.exceptions.ConnectionError:
+        return False
+    return response
+
 
 def post_sensor_data(data, sensor_timestamp=None, save_to_disk=True):
     # Example usage:
