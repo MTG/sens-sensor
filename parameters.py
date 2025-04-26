@@ -95,5 +95,8 @@ watchdog = 12
 # Check for sensor status every 10 messages
 status_every = 10
 
+# Send batch of messages every
+send_every_sec = 30  # seconds
+
 # LIBRARY EXPERIMENT THRESHOLD
 human_th = 0.25

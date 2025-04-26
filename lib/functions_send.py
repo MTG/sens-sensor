@@ -149,6 +149,7 @@ def send_server_batch():
     folder_path = pm.predictions_folder_path
     status_every = pm.status_every
     errors_path = pm.errors_path
+    send_every_sec = pm.send_every_sec
 
     # Configure LEDs
     GPIO.setmode(GPIO.BCM)  # Set up GPIO mode
@@ -253,7 +254,7 @@ def send_server_batch():
             GPIO.output(watchdog_pin, GPIO.LOW)  # Stop pulse
             ####################
 
-            time.sleep(60)  # wait to accumulate messages for a minute
+            time.sleep(send_every_sec)  # wait to accumulate messages for a minute
 
     finally:
         print("Adios")
