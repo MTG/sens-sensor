@@ -49,16 +49,16 @@ def send_server():
     errors_path = pm.errors_path
 
     # Configure LEDs
-    # GPIO.setmode(GPIO.BCM)  # Set up GPIO mode
+    GPIO.setmode(GPIO.BCM)  # Set up GPIO mode
     # 20--> Yellow
     # 21--> Red
     # 16--> Green
-    # for pin in led_pins:  # Set up each LED pin as an output
-    #   GPIO.setup(pin, GPIO.OUT)
+    for pin in led_pins:  # Set up each LED pin as an output
+        GPIO.setup(pin, GPIO.OUT)
 
     #### WATCHDOG code ###
-    # watchdog_pin = pm.watchdog
-    # GPIO.setup(watchdog_pin, GPIO.OUT)
+    watchdog_pin = pm.watchdog
+    GPIO.setup(watchdog_pin, GPIO.OUT)
     ####################
 
     # Counter for sending sensor status updates
@@ -103,9 +103,9 @@ def send_server():
                                     # Proceed to delete sent file
                                     os.remove(single_file)
                                     print(f"Deleted.")
-                                    # turn_leds_on(GPIO, led_pins)  # Turn on LEDs
+                                    turn_leds_on(GPIO, led_pins)  # Turn on LEDs
                                     #### WATCHDOG code ###
-                                    # GPIO.output(watchdog_pin, GPIO.HIGH)  # Send pulse
+                                    GPIO.output(watchdog_pin, GPIO.HIGH)  # Send pulse
                                     ####################
                                     # Update counter status
                                     counter_status = counter_status + 1
@@ -115,9 +115,9 @@ def send_server():
                                     print(
                                         f"File {single_file} could not be sent. Server response: {response}"
                                     )
-                                    # turn_leds_off(GPIO, led_pins)
+                                    turn_leds_off(GPIO, led_pins)
                                     #### WATCHDOG code ###
-                                    # .output(watchdog_pin, GPIO.LOW)  # Stop pulse
+                                    GPIO.output(watchdog_pin, GPIO.LOW)  # Stop pulse
                                     ####################
                             else:
                                 print("No connection.")
@@ -132,10 +132,10 @@ def send_server():
             time.sleep(0.2)
 
             # If nothing to send, turn off
-            # print("waiting...")
-            # (GPIO, led_pins)
+            print("waiting...")
+            turn_leds_off(GPIO, led_pins)
             #### WATCHDOG code ###
-            # GPIO.output(watchdog_pin, GPIO.LOW)  # Stop pulse
+            GPIO.output(watchdog_pin, GPIO.LOW)  # Stop pulse
             ####################
 
     finally:
