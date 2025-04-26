@@ -230,11 +230,11 @@ def send_server_batch():
                                 # Proceed to delete sent file
                                 os.remove(single_file)
                                 print(f"Deleted.")
-                            # OK --> activate LEDs
-                            turn_leds_on(GPIO, led_pins)  # Turn on LEDs
-                            #### WATCHDOG code ###
-                            GPIO.output(watchdog_pin, GPIO.HIGH)  # Send pulse
-                            ####################
+                                # OK --> activate LEDs
+                                turn_leds_on(GPIO, led_pins)  # Turn on LEDs
+                                #### WATCHDOG code ###
+                                GPIO.output(watchdog_pin, GPIO.HIGH)  # Send pulse
+                                ####################
 
                         else:
                             print(
