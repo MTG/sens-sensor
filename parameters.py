@@ -97,6 +97,7 @@ status_every = 10
 
 # Send batch of messages every
 send_every_sec = 30  # seconds
+max_per_batch = 20  # messages max per batch
 
 # LIBRARY EXPERIMENT THRESHOLD
 human_th = 0.25
