@@ -150,6 +150,7 @@ def send_server_batch():
     status_every = pm.status_every
     errors_path = pm.errors_path
     send_every_sec = pm.send_every_sec
+    max_per_batch = pm.max_per_batch
 
     # Configure LEDs
     GPIO.setmode(GPIO.BCM)  # Set up GPIO mode
@@ -170,82 +171,95 @@ def send_server_batch():
     # Read predictions, send them and delete them once sent
     try:
         while True:
-            # Get latest file
+            # Get JSON files
             file_pattern = "*.json"  # file_pattern = "*.txt"
             files = glob.glob(os.path.join(folder_path, file_pattern))
-            if len(files) != 0:
-                # There are files!
+            if len(files) >= max_per_batch:
+                # There are enough files!
                 files.sort()
                 most_recent = files[-1]
+                # check
+                print("most recent file ", most_recent)
+                print("least recent file ", files[0])
                 data_list = []  # to accumulate jsons of data
                 files_list = []
-                # Check if most recent file is not empty
-                if os.path.getsize(most_recent) > 0:
-                    for single_file in files:
-                        print("file ", single_file)
-                        # Check if file is not empty
-                        if os.path.getsize(single_file) > 0:
-                            # File has content
-                            # Read and send content
-                            with open(single_file, "r") as file:
-                                content = json.load(file)
 
-                            # Sensor status
-                            print(counter_status)
-                            if counter_status == 0:
-                                sensor_info = gather_raspberry_pi_info()
-                                content["sensor_info"] = sensor_info
-                            # Update counter status
-                            counter_status = counter_status + 1
-                            if counter_status >= status_every:
-                                counter_status = 0
+                batch_counter = 0
+                for single_file in files:
 
-                            # Create complete content entry
-                            content = client.post_sensor_data_nosend(
-                                content,
-                                sensor_timestamp=content["datetime"],
-                                save_to_disk=False,
+                    print("file ", single_file)
+                    # Check if file is not empty
+                    if os.path.getsize(single_file) > 0:
+                        # File has content
+                        # Read and send content
+                        with open(single_file, "r") as file:
+                            content = json.load(file)
+
+                        # increase counter of messages in batch
+                        batch_counter = batch_counter + 1
+
+                        if max_per_batch == batch_counter:
+                            # Add sensor status to last message
+                            sensor_info = gather_raspberry_pi_info()
+                            content["sensor_info"] = sensor_info
+
+                        # Create complete content entry
+                        content = client.post_sensor_data_nosend(
+                            content,
+                            sensor_timestamp=content["datetime"],
+                            save_to_disk=False,
+                        )
+                        # add to list of messages
+                        data_list.append(content)
+                        files_list.append(single_file)
+
+                        if max_per_batch == batch_counter:
+                            # Completed message, send it!
+                            response = client.post_sensor_data_send(
+                                data=data_list,
                             )
-                            # add to list of messages
-                            data_list.append(content)
-                            files_list.append(single_file)
 
-                        else:
-                            # File is old and empty! Delete to not accumulate!
-                            os.remove(single_file)
-                            log_text = (
-                                f"Send process: Deleted because empty --> {single_file}"
-                            )
-                            update_logs_file(errors_path, log_text)
+                            if response != False:  # Connection is good
+                                if response.ok == True:  # File sent
+                                    for single_file in files_list:
+                                        print(f"Prediction sent - {single_file}")
+                                        # Proceed to delete sent file
+                                        os.remove(single_file)
+                                        print(f"Deleted.")
+                                        # OK --> activate LEDs and watchdog
+                                        turn_leds_on(GPIO, led_pins)  # ON
+                                        GPIO.output(watchdog_pin, GPIO.HIGH)
+                                        time.sleep(0.1)  # Make sure watchdog receives
+                                        GPIO.output(watchdog_pin, GPIO.LOW)
+                                        turn_leds_off(GPIO, led_pins)  # OFF
+                                        ####################
 
-                    # Send list of dict
-                    response = client.post_sensor_data_send(
-                        data=data_list,
-                    )
+                                        # Reset for next iterations
+                                        batch_counter = 0
+                                        data_list = []
+                                        files_list = []
 
-                    if response != False:  # Connection is good
-                        if response.ok == True:  # File sent
-                            for single_file in files_list:
-                                print(f"Prediction sent - {single_file}")
-                                # Proceed to delete sent file
-                                os.remove(single_file)
-                                print(f"Deleted.")
-                                # OK --> activate LEDs
-                                turn_leds_on(GPIO, led_pins)  # Turn on LEDs
-                                #### WATCHDOG code ###
-                                GPIO.output(watchdog_pin, GPIO.HIGH)  # Send pulse
-                                ####################
+                                else:
+                                    print(
+                                        f"Files could not be sent. Server response: {response}"
+                                    )
+                                    turn_leds_off(GPIO, led_pins)
+                                    #### WATCHDOG code ###
+                                    GPIO.output(watchdog_pin, GPIO.LOW)  # Stop pulse
+                                    ####################
+                            else:
+                                print("No connection.")
 
-                        else:
-                            print(
-                                f"Files could not be sent. Server response: {response}"
-                            )
-                            turn_leds_off(GPIO, led_pins)
-                            #### WATCHDOG code ###
-                            GPIO.output(watchdog_pin, GPIO.LOW)  # Stop pulse
-                            ####################
                     else:
-                        print("No connection.")
+                        # If it is the most recent (meaning that it is still being written)
+                        if single_file == most_recent:
+                            continue
+                        # File is old and empty! Delete to not accumulate!
+                        os.remove(single_file)
+                        log_text = (
+                            f"Send process: Deleted because empty --> {single_file}"
+                        )
+                        update_logs_file(errors_path, log_text)
 
             # If nothing to send, turn off
             print("waiting...")
