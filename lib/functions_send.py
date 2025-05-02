@@ -195,6 +195,16 @@ def send_server_batch():
                         with open(single_file, "r") as file:
                             content = json.load(file)
 
+                        try:
+                            with open(single_file, "r") as file:
+                                content = json.load(file)
+                        except json.JSONDecodeError:
+                            # File is old and empty! Delete to not accumulate!
+                            os.remove(single_file)
+                            log_text = f"Send process: Deleted because error in JSON --> {single_file}"
+                            update_logs_file(errors_path, log_text)
+                            continue
+
                         # increase counter of messages in batch
                         batch_counter = batch_counter + 1
 
