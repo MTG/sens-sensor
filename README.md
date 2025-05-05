@@ -48,6 +48,8 @@ SENS combines hardware and software in an intelligent acoustic sensor for monito
 2. [Run SENS software on device](#run-sens-software-on-device)
 3. [Simulate SENS](#simulate-sens)
 
+You can find the trained models in *data/models*.
+
 
 ## Build SENS hardware and software
 SENS is implemented in a RaspberryPi model B 4GB RAM with 64-bit architecture operative system. The device has a microphone connected as well as a Mobile Network Hat with a SIM card. Additionally, three LED pins are connected and configured to signal the correct performance of the sensor. The ensembled components are placed inside an IP67 plastic case. 
@@ -126,6 +128,8 @@ cd sens-sensor
 
 python simulate_SENS.py
 ```
+
+Note: you may get errors with RPi.GPIO library as the code is expecting LED pins connected to the RaspberryPi. Simply delete this code lines.
 
 
 ## Environment set up
