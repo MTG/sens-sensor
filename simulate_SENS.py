@@ -18,13 +18,13 @@ from lib.functions_simulation import sensor_processing
 tzinfo = zoneinfo.ZoneInfo(time.tzname[0])
 
 sensor_processing(
-    audio_file_path="data/audios/audio_simulation_2.wav",
-    saving_folder_path="data/deleteee",
-    gain=1.5,
+    audio_file_path="USS Poster/simulation_Ciutat_proactiva/simulation_Ciutat_proactiva.wav",
+    saving_folder_path="simulation_results",
+    gain=1,
     timestamp=datetime.datetime.now(tzinfo).replace(microsecond=0),
     action="save",
-    seconds_segment=3,  # pm.segment_length,
-    n_segments=10,  # pm.n_segments_intg,
+    seconds_segment=3,  # seconds per audio chunck to analyse
+    n_segments=10,  # to integrate for Pleasantness and Eventfulness Integrated
     model_CLAP_path=pm.model_CLAP_path,
     pca_path=pm.pca_path,
     models_predictions_path=pm.models_predictions_path,
