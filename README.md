@@ -60,7 +60,7 @@ SENS is implemented in a RaspberryPi model B 4GB RAM with 64-bit architecture op
 
 
 
-To run the software, first, follow de instructions in [Environment set up](#environment-set-up) to prepare your working environment. Then, it is advised to check [Code Structure](#code-structure) to understand how the code works. To run, simply do
+To run the software, first, follow de instructions in [Environment set up](#environment-set-up) to prepare your working environment. Then, it is advised to check [Code Structure](#code-structure) to understand how the code works. Do not forget to calibrate the microphone, check [Microphone calibration](#microphone-calibration). To run, simply do
 ```
 # Open three terminals and activate the environment in all of them
 
@@ -93,7 +93,7 @@ Some notes:
 
 You can simply run the SENS code in any device that has a microphone input, like a laptop.
 
-For this, you should, first, follow de instructions in [Environment set up](#environment-set-up) to prepare your working environment. Then, it is advised to check [Code Structure](#code-structure) to understand how the code works. To run, simply do
+For this, you should, first, follow de instructions in [Environment set up](#environment-set-up) to prepare your working environment. Then, it is advised to check [Code Structure](#code-structure) to understand how the code works. Do not forget to calibrate the microphone, check [Microphone calibration](#microphone-calibration). To run, simply do
 ```
 # Open three terminals and activate the environment in all of them
 
@@ -200,6 +200,13 @@ Now you are ready to start using sens-sensor repository.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+## Microphone calibration
+SENS measures Leq and LAeq in real-time. The microphone needs to be calibrated. You can use the calibration you want, as long as in parameters.mic_calib_path you specify the file path to the txt file that contains the calibration factor by which the captured waveform needs to be multiplied in order to get the V_rms signal (from which we can calculate dBs). 
+
+If you own a microphone calibrator that plays a 1KHz signal at the standard 94dB like <a href="https://www.amazon.es/Calibrador-digital-port%C3%A1til-medidor-medici%C3%B3n/dp/B01FFI2OAU?th=1">example</a>, simply activate the environment and run the following command in the terminal to calibrate:
+```
+python calibration.py [microphone input, integer]
+```
 
 ## Code Structure
 

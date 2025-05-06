@@ -150,3 +150,57 @@ def calculate_SPL(audio_data, fs, gain=1):
     LAeq = calculate_LAeq(audio_data * gain, fs=fs)
 
     return f"{Leq_calc};{LAeq}"
+
+
+
+def calibrate(device):
+    """Function to be used with a calibrator, as it compares the SPL value
+    of the microphone with the theoretical value of 94dB (1KHz) in order to obtain 
+    the calibration factor. The Calibration Factor is written in the file 'calib.txt'
+
+    """
+    calib_file_path = pm.mic_calib_path
+    fs= 48000
+    channels=1
+    recordingtime=15
+    pref=20e-6
+
+    # Record audio for the given duration
+    print(f"Recording for {recordingtime} seconds...")
+    audio_data = sd.rec(
+        device=device,
+        frames=int(recordingtime * fs),
+        samplerate=fs,
+        channels=channels,
+        dtype="int16"
+    )
+    sd.wait()  # Wait until recording is finished
+    print("Recording complete.")
+
+    # Convert to numpy array
+    audio_data = np.array(audio_data)
+
+    # If stereo, keep only the first channel
+    if audio_data.ndim == 2 and audio_data.shape[1] > 1:
+        print(f"Audio has {audio_data.shape[1]} channels. Keeping only the first channel.")
+        audio_data = audio_data[:, 0]
+
+    # Leq and LAeq calculation
+    spl_str = calculate_SPL(
+        audio_data=audio_data, fs=fs, gain=1
+    )
+    SPL_measured=float(spl_str.split(";")[0])
+
+    # Calibration Factor
+    Vrms_measured = (10 ** (SPL_measured / 20)) * pref
+    calibration=10**(94/20)*pref/Vrms_measured
+
+    # Save
+    if not os.path.exists(calib_file_path):
+        # Make sure the directory exists
+        os.makedirs(os.path.dirname(calib_file_path), exist_ok=True)
+
+    # Create the file
+    with open(calib_file_path, "w") as f:
+        f.write(str(calibration))
+    return print("Calibration sucessfully done")
