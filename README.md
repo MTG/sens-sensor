@@ -60,7 +60,7 @@ SENS is implemented in a RaspberryPi model B 4GB RAM with 64-bit architecture op
 
 
 
-To run the software, first, follow de instructions in [Environment set up](#environment-set-up) to prepare your working environment. Then, it is advised to check [Code Structure](#code-structure) to understand how the code works. Do not forget to calibrate the microphone, check [Microphone calibration](#microphone-calibration). To run, simply do
+To run the software, first, follow de instructions in [Environment set up](#environment-set-up) to prepare your working environment. Download the required models from <a href="https://zenodo.org/records/15348686">Zenodo</a> and place them in **sens-sensor/data/models/**. Then, it is advised to check [Code Structure](#code-structure) to understand how the code works. Do not forget to calibrate the microphone, check [Microphone calibration](#microphone-calibration). To run, simply do
 ```
 # Open three terminals and activate the environment in all of them
 
@@ -93,7 +93,7 @@ Some notes:
 
 You can simply run the SENS code in any device that has a microphone input, like a laptop.
 
-For this, you should, first, follow de instructions in [Environment set up](#environment-set-up) to prepare your working environment. Then, it is advised to check [Code Structure](#code-structure) to understand how the code works. Do not forget to calibrate the microphone, check [Microphone calibration](#microphone-calibration). To run, simply do
+For this, you should, first, follow de instructions in [Environment set up](#environment-set-up) to prepare your working environment. Download the required models from <a href="https://zenodo.org/records/15348686">Zenodo</a> and place them in **sens-sensor/data/models/**. Then, it is advised to check [Code Structure](#code-structure) to understand how the code works. Do not forget to calibrate the microphone, check [Microphone calibration](#microphone-calibration). To run, simply do
 ```
 # Open three terminals and activate the environment in all of them
 
@@ -121,7 +121,7 @@ We have prepared a little piece of code that simulates SENS functioning. This sc
 
 It is adviced to use this algorithm on short audios (< 1 minute) to have clearer output graphs. If you use a longer audio, graphs will not be as clear.
 
-For this, you should, first, follow de instructions in [Environment set up](#environment-set-up) to prepare your working environment. Then, simply run in a terminal:
+For this, you should, first, follow de instructions in [Environment set up](#environment-set-up) to prepare your working environment. Download the required models from <a href="https://zenodo.org/records/15348686">Zenodo</a> and place them in **sens-sensor/data/models/**. Then, simply run in a terminal:
 
 ```
 cd sens-sensor
