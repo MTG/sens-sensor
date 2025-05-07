@@ -192,8 +192,8 @@ def send_server_batch():
                     if os.path.getsize(single_file) > 0:
                         # File has content
                         # Read and send content
-                        with open(single_file, "r") as file:
-                            content = json.load(file)
+                        """with open(single_file, "r") as file:
+                            content = json.load(file)"""
 
                         try:
                             with open(single_file, "r") as file:
