@@ -142,27 +142,27 @@ def perform_prediction(
     for model in models_predictions:
         if model == "P" or model == "E":
             # Model is P or E
-            predictions[str(model + "_inst")] = models_predictions[model].predict(
-                features_single
-            )[0]
-            predictions[str(model + "_intg")] = models_predictions[model].predict(
-                features_group
-            )[0]
+            predictions[str(model + "_inst")] = round(
+                models_predictions[model].predict(features_single)[0], 3
+            )
+            predictions[str(model + "_intg")] = round(
+                models_predictions[model].predict(features_group)[0], 3
+            )
         else:
             # Model is a source type
             # Check if "sources" exists in predictions; if not, initialize it as an empty dictionary
             if "sources" not in predictions:
                 predictions["sources"] = {}
-            predictions["sources"][model] = models_predictions[model].predict_proba(
-                features_single
-            )[0][1]
+            predictions["sources"][model] = round(
+                models_predictions[model].predict_proba(features_single)[0][1], 3
+            )
 
     # Complete dictionary with Leq, LAeq, datetime
     tzinfo = zoneinfo.ZoneInfo(time.tzname[0])
     current_timestamp = datetime.datetime.now(tzinfo).replace(microsecond=0)
     measure_timestamp = extract_timestamp(file_name=txt_file_path)
-    predictions["leq"] = Leq
-    predictions["LAeq"] = LAeq
+    predictions["leq"] = round(Leq, 3)
+    predictions["LAeq"] = round(LAeq, 3)
     predictions["datetime"] = measure_timestamp.isoformat()
 
     # Save predictions to a JSON file

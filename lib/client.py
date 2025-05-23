@@ -4,6 +4,7 @@ import uuid
 import os
 import datetime
 import sys
+import msgpack
 
 # Path importing
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -70,11 +71,15 @@ def post_sensor_data_nosend(data, sensor_timestamp=None, save_to_disk=True):
 def post_sensor_data_send(data):
 
     url = API_BASE_URL + "/sensor-data/"
-    headers = {"Content-Type": "application/json"}
+    # headers = {"Content-Type": "application/json"}
+    headers = {"Content-Type": "application/msgpack"}
+
+    data = msgpack.packb(data)  # Pack, binary serializer
 
     # Send to server
     try:
-        response = requests.post(url, headers=headers, json=data, timeout=10)
+        # response = requests.post(url, headers=headers, json=data, timeout=10)
+        response = requests.post(url, headers=headers, data=data, timeout=10)
     except requests.exceptions.ConnectionError:
         return False
     return response
