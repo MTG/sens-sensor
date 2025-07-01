@@ -14,7 +14,7 @@ sys.path.append(src_dir)
 # Imports from this project
 import parameters as pm
 
-API_BASE_URL = "https://labs.freesound.org/sens/api"
+API_BASE_URL = "https://sens.upf.edu/sens/api"  # "https://labs.freesound.org/sens/api"
 LOCAL_COPY_DATA_PATH = "posted"
 
 # Get SENSOR_ID from a file named sensor_id.txt which should be in the same directory
@@ -79,7 +79,9 @@ def post_sensor_data_send(data):
     # Send to server
     try:
         # response = requests.post(url, headers=headers, json=data, timeout=10)
-        response = requests.post(url, headers=headers, data=data, timeout=10)
+        response = requests.post(
+            url, headers=headers, data=data, timeout=10, verify=False
+        )
     except requests.exceptions.ConnectionError:
         return False
     return response
