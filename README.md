@@ -210,6 +210,10 @@ python calibration.py [microphone input, integer]
 
 ## Code Structure
 
+This schema presents the general workflow
+
+<img src="data/images/SENS-software-schema.png" alt="software structure" width="50%">
+
 The following three images indicate the 3 main processes that create SENS working. Each process is executed through a different python script that is called in different terminal windows.
 
 <img src="data/images/main_capture.png" alt="audio capture process" width="75%">
