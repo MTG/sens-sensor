@@ -42,20 +42,20 @@ It is funded by <i>BIT Habitat (Ajuntament de Barcelona)</i> under the program <
 - Amaia Sagasti Martínez - MASTER THESIS: *Prediction of Pleasantness and Eventfulness Perceptual Sound Qualities in Urban Soundscapes* - Sound and Music Computing Master (Music Technology Group, Universitat Pompeu Fabra - Barcelona) <a href="https://zenodo.org/records/13861445">Master Thesis Report link Zenodo</a>
 
 ## Guide
-SENS combines hardware and software in an intelligent acoustic sensor for monitoring urban spaces. Nevertheless, the software can work on its own, allowing to use SENS technology on any device with a microphone (like a laptop). Additionally, SENS algorithm can be simulated on a pre-recorded audio. See the section details that suit best your needs:
+SENS combines hardware and software in an intelligent acoustic sensor for monitoring urban spaces. Nevertheless, the software can work on its own, allowing to use SENS technology on any device with a microphone (like a laptop). Additionally, SENS algorithm can be simulated on a pre-recorded audio. Besides, the data transmission can happen via Wifi (Raspberry Pi integrates Wifi connection) or via the mobile network (special module needed), but, if transmitting data to a remote server is unnecessary, the modular
+design of the software allows it to operate entirely offline. See the section details that suit best your needs:
 
-1. [Build SENS hardware and software](#build-sens-hardware-and-software)
-2. [Run SENS software on device](#run-sens-software-on-device)
+1. [Build SENS hardware and software](#build-sens-hardware-and-run-its-software)
+2. [Run SENS software on any device](#run-sens-software-on-device)
 3. [Simulate SENS](#simulate-sens)
 
 You can find the trained models in *data/models*.
 
 
-## Build SENS hardware and software
-SENS is implemented in a RaspberryPi model B 4GB RAM with 64-bit architecture operative system. The device has a microphone connected as well as a Mobile Network Hat with a SIM card. Additionally, three LED pins are connected and configured to signal the correct performance of the sensor. The ensembled components are placed inside an IP67 plastic case. 
+## Build SENS hardware and run its software
+SENS is implemented in a RaspberryPi model B 4GB RAM with 64-bit architecture operative system. The device has a microphone connected as well as a mobile network module with a SIM card, mobile network connectivity was required for the use case. Additionally, three LED pins are connected and configured to signal the correct performance of the sensor. The ensembled components are placed inside an IP67 plastic case. 
 
 <img src="data/images/SENS-hardware.png" alt="SENS components" width="37%" style="float: center;margin-right: 10px;">
-<img src="data/images/SENS-case.png" alt="SENS built" width="25%" style="float: center;margin-right: 10px;">
 <img src="data/images/SENS-up.png" alt="SENS built" width="25%" style="float: center;margin-right: 10px;">
 
 
@@ -72,15 +72,13 @@ python main_send.py [microphone input, integer]
 # Terminal 2
 python main_process.py
 
-# Terminal 3
+# Terminal 3 (if data transmission is necessary)
 python main_send.py
 ```
 
 Some notes:
 - Suggestion for microphone: <a href="https://www.amazon.es/Fyvadio-USB-Omnidireccional-Condensador-podcasting/dp/B0BZNJSMVM/ref=sr_1_6?__mk_es_ES=%C3%85M%C3%85%C5%BD%C3%95%C3%91&crid=1IR6ON690I2J3&dib=eyJ2IjoiMSJ9.K67IehFtlRZDS5jBrdkCYYtb-skINASIKTINaz5NkCtzrL_167PaXa-g2esglBhg89pV4vAZS8oU03mxm78ptzrMjhlJrFH8ZWtMB1S8LTnSCe80w5IU4abV1LUlSfehrP4NbqzSUZDgDHUB0Y5Fo3fGEpsakZX6NQD7sUTQ0IHBt0aau_cy9i6bW5OGjXvt3SaK2KiHG24CsfBVLBD_-0SNMtMRVRxylXr1HHoZmUZaGJCCud3MzPBJ1b9pxjvM0rfMHIO4okzxPBnfxWnNYzkFYyeaFj1qLZHXH2QLkac.yPw6iXIBAhL2HEaX2wkDg-4M5ysw5Et6p3c8Ee6_LCo&dib_tag=se&keywords=usb+microphone&qid=1746446343&s=electronics&sprefix=usb+microphone%2Celectronics%2C139&sr=1-6">link</a>
-- Suggestion for communication hat: <a href="https://www.amazon.es/Waveshare-4G-Raspberry-SIM7600E-H-Supports/dp/B07F1NSGQ8/ref=asc_df_B07F1NSGQ8?mcid=e40563a86cf538528ebeeb339119f94b&tag=googshopes-21&linkCode=df0&hvadid=699750349813&hvpos=&hvnetw=g&hvrand=5563297664507590566&hvpone=&hvptwo=&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=9198717&hvtargid=pla-562517396842&psc=1&gad_source=1">link</a>
 - Suggestion for LED pins: <a href="https://www.amazon.es/VooGenzek-Semaforo-Pantalla-Compatible-Raspberry/dp/B09NDPFJ4W/ref=sr_1_8?__mk_es_ES=%C3%85M%C3%85%C5%BD%C3%95%C3%91&crid=8Y4TUX5OW0H3&dib=eyJ2IjoiMSJ9.sdCHTkJ-CSToBSNew5hmfo4h1uWa-S986b2gQN-hpBhfa6L4MP7WsKBM8aRU6OEVmiGZ_McB0lbzc0dWdKiSDQZdstQ_lTzVZeT3J0_l6mvMG44LXzHswrAl6EejmH5FjATyZq0BwykKWoFoB6aWnMqpIIUyeKFws0Tly-EI0Z354ovRiHJfqBbuEKMPH0kZtj6b2CJprn91J0n0qAb5y-GbvbDxpjxy226ICJrX4dEHvMWBXXPccwdaazcdAOQyGYbY3tM1D6uMD6npSlfqI8K6CSRpr18DPepn8XjLido.RgFGyjjaOIgxwImImDZsYfTZo7EHSdQNnAET8IErRgI&dib_tag=se&keywords=3+LED+raspberrypi&qid=1746446453&sprefix=3+led+raspberrypi%2Caps%2C92&sr=8-8">link</a>
-- Suggestion for IP65 plastic case (check sizes): <a href="hhttps://www.amazon.es/conexiones-el%C3%A9ctricas-impermeable-electrica-derivacion/dp/B0DS2HGNXL/ref=sr_1_12?__mk_es_ES=%C3%85M%C3%85%C5%BD%C3%95%C3%91&crid=3OCESSQZRMVO9&dib=eyJ2IjoiMSJ9.GtOvPooWEPqbIsMS7RrnvygV7d42R749QaoVj59BgfRNpeBHTNcqzBlj-Ez4S0NPmWW7ZnazzbBkoyPlINtnWEs9ICi8nEBnI07mPi2zjy53Z-_wlgBfgd-Os3xtXO_mKAUlp606yLu5goUxydrnlfUrRqoQGDPsbUH5Bb17yrcleJEEv64tf2UkQ6601t7KvWctdrKVSDt-zYvGmKyBEsXakxm-60ReT-byBya9WQ9wKhzF41fgv42WSVSJya1EirEnzEV1JEA5RkfsJeibzQckGd8mxvkyJ1q-t8d4_Hk.hNf4c0wOxchAqV3GXPwzI4emSTMoytr51byfYXZVyEo&dib_tag=se&keywords=IP65+plastic+case&qid=1746446766&sprefix=ip65+plastic+case%2Caps%2C118&sr=8-12">link</a> 
 - Internet data consumption: in our case, we were making predictions every 3 seconds (generating 20 predictions per minute), but sending one message for every batch of 10 predictions (so one send every 30 seconds approximately). Every message sent is about 20KB, which leads to 24 hours x 60 minutes x 2 messages x 20KB = **58MB per day** or **1'7GB per month**. We use SIM cards of 4GB of internet data.
 - You will need to modify the "sending" part of the code structure to send the real-time predictions to your own server.
 - You can modify the AI models that you want to use from *parameters.py*
@@ -89,7 +87,7 @@ Some notes:
 
 *(Product links may be outdated)*
 
-## Run SENS software on device
+## Run SENS software on any device
 
 You can simply run the SENS code in any device that has a microphone input, like a laptop.
 
@@ -105,7 +103,7 @@ python main_send.py [microphone input, integer]
 # Terminal 2
 python main_process.py
 
-# Terminal 3
+# Terminal 3 (if data transmission is necessary)
 python main_send.py
 ```
 
