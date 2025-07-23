@@ -16,6 +16,7 @@ import parameters as pm
 
 API_BASE_URL = "https://sens.upf.edu/sens/api"  # "https://labs.freesound.org/sens/api"
 LOCAL_COPY_DATA_PATH = "posted"
+API_TOKEN = os.getenv('API_TOKEN',  '')
 
 # Get SENSOR_ID from a file named sensor_id.txt which should be in the same directory
 SENSOR_ID = "unknown"
@@ -51,14 +52,14 @@ def save_posted_data_to_disk(data):
         json.dump(data, f)
 
 
-def post_sensor_data_nosend(data, sensor_timestamp=None, save_to_disk=True):
+def prepare_single_sensor_data_nosend(data, sensor_timestamp=None, save_to_disk=False):
 
     if sensor_timestamp is None:
         sensor_timestamp = datetime.datetime.now().replace(microsecond=0).isoformat()
     data = {
         "uuid": str(uuid.uuid4()),  # Generate unique uuid for data point
         "sensor_timestamp": sensor_timestamp,  # .isoformat(), # DELETED BECAUSE ALREADY DONE
-        "sensor_id": SENSOR_ID,
+        "sensor": SENSOR_ID,
         "location": LOCATION,
         "data": data,
     }
@@ -68,11 +69,12 @@ def post_sensor_data_nosend(data, sensor_timestamp=None, save_to_disk=True):
     return data
 
 
-def post_sensor_data_send(data):
+def post_sensor_data_batch(data):
 
     url = API_BASE_URL + "/sensor-data/"
     # headers = {"Content-Type": "application/json"}
-    headers = {"Content-Type": "application/msgpack"}
+    headers = {"Content-Type": "application/msgpack",
+               "Authorization": f"Token {API_TOKEN}"}
 
     data = msgpack.packb(data)  # Pack, binary serializer
 
@@ -87,18 +89,19 @@ def post_sensor_data_send(data):
     return response
 
 
-def post_sensor_data(data, sensor_timestamp=None, save_to_disk=True):
+def post_sensor_data_single(data, sensor_timestamp=None, save_to_disk=False):
     # Example usage:
     # post_sensor_data({"pleasantness": 0.85, "eventfulness": 0.3, "sources": {"bird": 0.5, "car": 0.2}})
     # post_sensor_data({"pleasantness": 0.85, "eventfulness": 0.3, "sources": {"bird": 0.5, "car": 0.2}}, sensor_timestamp=datetime.datetime(2024, 1, 1, 12, 23))
     url = API_BASE_URL + "/sensor-data/"
-    headers = {"Content-Type": "application/json"}
+    headers = {"Content-Type": "application/json",
+               "Authorization": f"Token {API_TOKEN}"}
     if sensor_timestamp is None:
         sensor_timestamp = datetime.datetime.now().replace(microsecond=0).isoformat()
     data = {
         "uuid": str(uuid.uuid4()),  # Generate unique uuid for data point
         "sensor_timestamp": sensor_timestamp,  # .isoformat(), # DELETED BECAUSE ALREADY DONE
-        "sensor_id": SENSOR_ID,
+        "sensor": SENSOR_ID,
         "location": LOCATION,
         "data": data,
     }
@@ -119,13 +122,14 @@ def post_sensor_data_simulation(
     # post_sensor_data({"pleasantness": 0.85, "eventfulness": 0.3, "sources": {"bird": 0.5, "car": 0.2}})
     # post_sensor_data({"pleasantness": 0.85, "eventfulness": 0.3, "sources": {"bird": 0.5, "car": 0.2}}, sensor_timestamp=datetime.datetime(2024, 1, 1, 12, 23))
     url = API_BASE_URL + "/sensor-data/"
-    headers = {"Content-Type": "application/json"}
+    headers = {"Content-Type": "application/json",
+               "Authorization": f"Token {API_TOKEN}"}
     if sensor_timestamp is None:
         sensor_timestamp = datetime.datetime.now().replace(microsecond=0).isoformat()
     data = {
         "uuid": str(uuid.uuid4()),  # Generate unique uuid for data point
         "sensor_timestamp": sensor_timestamp,  # .isoformat(), # DELETED BECAUSE ALREADY DONE
-        "sensor_id": sensor_id,
+        "sensor": sensor_id,
         "location": location,
         "data": data,
     }
@@ -137,34 +141,3 @@ def post_sensor_data_simulation(
     except requests.exceptions.ConnectionError:
         return False
     return response
-
-
-def get_sensor_ids():
-    # Example usage:
-    # get_sensor_ids()
-    url = API_BASE_URL + "/sensor-data/sensor-ids/"
-    response = requests.get(url, timeout=10)
-    return response.json()
-
-
-def get_sensors_data(start_date, end_date):
-    # Example usage:
-    # get_sensors_data(start_date=datetime.datetime(2023,1,1), end_date=datetime.datetime(2025,3,5,22,13))
-    url = (
-        API_BASE_URL
-        + f"/sensor-data/time-range/?start_date={start_date}&end_date={end_date}"
-    )
-    response = requests.get(url, timeout=10)
-    return response.json()
-
-
-def get_data_for_sensor_id(sensor_id, start_date=None, end_date=None):
-    # Example usage:
-    # get_data_for_sensor_id(sensor_id='sensor1')
-    # get_data_for_sensor_id(sensor_id='sensor1', start_date=datetime.datetime(2023,1,1), end_date=datetime.datetime(2025,3,5,22,13))
-    url = API_BASE_URL + f"/download-sensor-data/{sensor_id}/"
-    if start_date and end_date:
-        url += f"time-range/?start_date={start_date}&end_date={end_date}"
-    print("URL OF REQUEST ", url)
-    response = requests.get(url, timeout=10)
-    return response.json()

@@ -91,7 +91,7 @@ def send_server():
                                 sensor_info = gather_raspberry_pi_info()
                                 content["sensor_info"] = sensor_info
 
-                            response = client.post_sensor_data(
+                            response = client.post_sensor_data_single(
                                 data=content,
                                 sensor_timestamp=content["datetime"],
                                 save_to_disk=False,
@@ -214,7 +214,7 @@ def send_server_batch():
                             content["sensor_info"] = sensor_info
 
                         # Create complete content entry
-                        content = client.post_sensor_data_nosend(
+                        content = client.prepare_single_sensor_data_nosend(
                             content,
                             sensor_timestamp=content["datetime"],
                             save_to_disk=False,
@@ -225,7 +225,7 @@ def send_server_batch():
 
                         if max_per_batch == batch_counter:
                             # Completed message, send it!
-                            response = client.post_sensor_data_send(
+                            response = client.post_sensor_data_batch(
                                 data=data_list,
                             )
 
@@ -358,7 +358,7 @@ def send_library():
                         print(f"An unexpected error occurred: {e}")
 
                     # Send to server
-                    response = client.post_sensor_data(
+                    response = client.post_sensor_data_single(
                         data=content,
                         sensor_timestamp=content["datetime"],
                         save_to_disk=False,
