@@ -975,9 +975,9 @@ def generate_features_US8k_2s(dataset_path, data_path, saving_folder):
         audio_array, fs = load_wav_to_array(file_path=audio_path)
         audio_length = len(audio_array)
         # Cut audio to 2 seconds
-        """ samples_cut = 2 * fs
+        samples_cut = 2 * fs
         if audio_length > samples_cut:
-            audio_array = audio_array[0:samples_cut] """
+            audio_array = audio_array[0:samples_cut]
 
         # Get CLAP embedding
         embedding = model.get_audio_embedding_from_data(
