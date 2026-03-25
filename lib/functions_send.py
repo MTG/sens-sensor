@@ -145,7 +145,7 @@ def send_server():
         print("Adios")
 
 
-def send_server_batch(use_pins=True):
+def send_server_batch():
 
     # Get parameters needed
     led_pins = [pm.red]  # Define GPIO pins for each LED
@@ -155,24 +155,22 @@ def send_server_batch(use_pins=True):
     send_every_sec = pm.send_every_sec
     max_per_batch = pm.max_per_batch
 
-    if use_pins:
+    print("Initializing GPIO mode...")
+    GPIO.setmode(GPIO.BCM)  # Set up GPIO mode
 
-        print("Initializing GPIO mode...")
-        GPIO.setmode(GPIO.BCM)  # Set up GPIO mode
+    # Configure LEDs
+    print("Configuring LED pins...")
+    # 20--> Yellow
+    # 21--> Red
+    # 16--> Green
+    for pin in led_pins:  # Set up each LED pin as an output
+        GPIO.setup(pin, GPIO.OUT)
 
-        # Configure LEDs
-        print("Configuring LED pins...")
-        # 20--> Yellow
-        # 21--> Red
-        # 16--> Green
-        for pin in led_pins:  # Set up each LED pin as an output
-            GPIO.setup(pin, GPIO.OUT)
-
-        #### WATCHDOG code ###
-        print("Configuring watchdog pin...")
-        watchdog_pin = pm.watchdog
-        GPIO.setup(watchdog_pin, GPIO.OUT)
-        ####################
+    #### WATCHDOG code ###
+    print("Configuring watchdog pin...")
+    watchdog_pin = pm.watchdog
+    GPIO.setup(watchdog_pin, GPIO.OUT)
+    ####################
     
     # Read predictions, send them and delete them once sent
     print("Will enter loop...")
@@ -244,14 +242,14 @@ def send_server_batch(use_pins=True):
                                     for single_file in files_list:
                                         # Proceed to delete sent file
                                         os.remove(single_file)
-                                        if use_pins:
-                                            # OK --> activate LEDs and watchdog
-                                            turn_leds_on(GPIO, led_pins)  # ON
-                                            GPIO.output(watchdog_pin, GPIO.HIGH)
-                                            time.sleep(0.1)  # Make sure watchdog receives
-                                            GPIO.output(watchdog_pin, GPIO.LOW)
-                                            turn_leds_off(GPIO, led_pins)  # OFF
-                                            ####################
+                                        
+                                        # OK --> activate LEDs and watchdog
+                                        turn_leds_on(GPIO, led_pins)  # ON
+                                        GPIO.output(watchdog_pin, GPIO.HIGH)
+                                        time.sleep(0.1)  # Make sure watchdog receives
+                                        GPIO.output(watchdog_pin, GPIO.LOW)
+                                        turn_leds_off(GPIO, led_pins)  # OFF
+                                        ####################
 
                                     # Reset for next iterations
                                     batch_counter = 0
@@ -262,11 +260,11 @@ def send_server_batch(use_pins=True):
                                     print(
                                         f"Files could not be sent. Server response: {response}"
                                     )
-                                    if use_pins:
-                                        turn_leds_off(GPIO, led_pins)
-                                        #### WATCHDOG code ###
-                                        GPIO.output(watchdog_pin, GPIO.LOW)  # Stop pulse
-                                        ####################
+                                    
+                                    turn_leds_off(GPIO, led_pins)
+                                    #### WATCHDOG code ###
+                                    GPIO.output(watchdog_pin, GPIO.LOW)  # Stop pulse
+                                    ####################
                             else:
                                 print("Files could not be sent, connection error.")
 
@@ -283,14 +281,15 @@ def send_server_batch(use_pins=True):
             else:
                 print("- Nothing to send, waiting for new files...")
             
-            if use_pins:
-                turn_leds_off(GPIO, led_pins)
+            turn_leds_off(GPIO, led_pins)
 
-                #### WATCHDOG code ###
-                GPIO.output(watchdog_pin, GPIO.LOW)  # Stop pulse
-                ####################
+            #### WATCHDOG code ###
+            GPIO.output(watchdog_pin, GPIO.LOW)  # Stop pulse
+            ####################
 
             time.sleep(send_every_sec)  # wait to accumulate messages for a minute
+
+            sys.stdout.flush()  # Flush the output buffer to ensure all prints are shown in real-time
 
     finally:
         print("Adios")

@@ -335,4 +335,5 @@ def sensor_work():
             print("- No new files found. Waiting for new files...")
 
         time.sleep(0.2)
+        sys.stdout.flush()  # Flush the output buffer to ensure all prints are shown in real-time
         turn_leds_off(GPIO, led_pins)  # Turn off LEDs
