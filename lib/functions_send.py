@@ -155,9 +155,11 @@ def send_server_batch():
     send_every_sec = pm.send_every_sec
     max_per_batch = pm.max_per_batch
 
-    
-    # Configure LEDs
+    print("Initializing GPIO mode...")
     GPIO.setmode(GPIO.BCM)  # Set up GPIO mode
+
+    # Configure LEDs
+    print("Configuring LED pins...")
     # 20--> Yellow
     # 21--> Red
     # 16--> Green
@@ -165,6 +167,7 @@ def send_server_batch():
         GPIO.setup(pin, GPIO.OUT)
 
     #### WATCHDOG code ###
+    print("Configuring watchdog pin...")
     watchdog_pin = pm.watchdog
     GPIO.setup(watchdog_pin, GPIO.OUT)
     ####################
