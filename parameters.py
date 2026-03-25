@@ -72,7 +72,7 @@ audios_folder_path = "../temporary_audios"
 
 # PREDICTIONS FOLDER
 predictions_folder_path = "../predictions"
-not_sent_predictions_folder_path = "../predictions_not_sent"
+not_sent_predictions_folder_path = "../predictions_not_sent"  # This was only used for the "library" version, not used anymore
 
 # ERRORS REGISTER FILE PATH
 errors_path = "../error_logs.txt"
