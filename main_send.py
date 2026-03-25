@@ -14,6 +14,7 @@ def main():
     # Check if the user provided exactly 2 arguments (IP and Port)
     if len(sys.argv) == 1:
         # Call function
+        print("Starting batch sending process...")
         send_server_batch()
 
 

@@ -145,7 +145,7 @@ def send_server():
         print("Adios")
 
 
-def send_server_batch(use_pins=False):
+def send_server_batch(use_pins=True):
 
     # Get parameters needed
     led_pins = [pm.red]  # Define GPIO pins for each LED
