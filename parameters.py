@@ -84,7 +84,7 @@ mic_calib = 1
 # CONFIGURATIONS
 segment_length = 3
 n_segments_intg = 10
-LAeq_limit = 40
+LAeq_limit = 40  # I think this is not used, instead, the limit is read from a file at sensor_dB_limit_path, but I will keep it here just in case 
 
 # PINS ASSIGNMENT
 yellow = 20

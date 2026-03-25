@@ -96,9 +96,7 @@ def perform_prediction(
     # txt_file_name= file_path.split("_")[-1].split(".txt")[0]
     # Load audio data
     audio_file_path = files_path[-1]  # file_path.split(".txt")[0] + ".pkl"
-    print(f"txt file {txt_file_path}")
-    print(f"audio file {audio_file_path}")
-    print("size ", os.path.getsize(audio_file_path))
+    
     with open(audio_file_path, "rb") as f:
         file_data = pickle.load(f)
     # Load txt file
@@ -107,12 +105,12 @@ def perform_prediction(
         Leq = float(content[0])
         LAeq = float(content[1])
     # Extract features
-    print("fila data ", file_data.shape)
     features_single = model_CLAP.get_audio_embedding_from_data(
         [file_data], use_tensor=False
     )
     # Apply PCA
     features_single = pca.transform(features_single)
+    print("Extracted CLAP features (and PCAed) for audio with shape", file_data.shape)
 
     # GROUP OF FILES ANALYSIS (INTEGRATED)
     if "P" in models_predictions or "E" in models_predictions:
@@ -136,6 +134,7 @@ def perform_prediction(
         )
         # Apply PCA
         features_group = pca.transform(features_group)
+        print("Extracted CLAP features (and PCAed) for joined audio with shape", joined_audio.shape)
 
     # PREDICTIONS
     predictions = {}
@@ -172,9 +171,8 @@ def perform_prediction(
         json.dump(predictions, file, indent=4)
     end_pred_time = time.time()
     print(
-        f"Predictions added to local json file, time diff {(current_timestamp-measure_timestamp).total_seconds()} seconds"
+        f"Predictions added to local json file, time diff {(current_timestamp-measure_timestamp).total_seconds()} seconds (prediction process took {(end_pred_time-start_pred_time)} seconds)"
     )
-    print(f"Prediction took {(end_pred_time-start_pred_time)} seconds")
 
 
 def initiate(model_CLAP_path, models_predictions_path, pca_path):
@@ -238,7 +236,7 @@ def sensor_work():
             LAeq_limit = float(f.read().strip())
     except FileNotFoundError:
         print(
-            "dB_limit.txt not found. Please create a file named sensor_id.txt in the same directory and write the sensor ID in it."
+            "dB_limit.txt not found. Please create a file named dB_limit.txt in the same directory and write the dB limit as a single number in it."
         )
 
     # Configure LEDs
@@ -290,18 +288,19 @@ def sensor_work():
                 os.path.getsize(single_file_path) >= 9
                 and os.path.getsize(audio_single_file_path) >= 960163
             ):  # txt files contain 9 characters
-                print("New file!")
-
+                print(f"- New {audio_single_file_path} and {single_file_path} files from ke-iot service ready to process!")
                 # Read measured LAeq to see if prediction needs to be done
-                with open(single_file_path, "r") as f:
-                    content = f.read().split(";")
-                    # Leq = float(content[0])
-                    LAeq = float(content[1])
-
+                try:
+                    with open(single_file_path, "r") as f:
+                        content = f.read().split(";")
+                        # Leq = float(content[0])
+                        LAeq = float(content[1])
+                except Exception as e:
+                    print(f"Error reading LAeq from {single_file_path}: {e}")
+                    print("Setting LAeq above limit to ensure prediction is attempted with this file")
+                    LAeq = LAeq_limit + 1  # Set LAeq above limit to ensure prediction is attempted
+                
                 if LAeq >= LAeq_limit:
-                    # Then do prediction, otherwise, don't
-                    print("LAeq above limits. Predict!")
-
                     # Leave only specified seconds of data (n_segments) for group analysis
                     if "P" in models_predictions_path or "E" in models_predictions_path:
                         number_files = len(files_path)
@@ -323,12 +322,17 @@ def sensor_work():
                     )
                 else:
                     print(
-                        f"{single_file_path} file --> Laeq={LAeq}dBA does not reach limit {LAeq_limit}dBA. No prediction."
+                        f"LAeq={LAeq}dBA does not reach limit {LAeq_limit}dBA. Skipping prediction."
                     )
 
                 # Either way, this file already was analised
                 prev_file = single_file_path
+            else :
+                print(
+                    f"- Found new files but these are too small. Waiting for new files..."
+                )
+        else:
+            print("- No new files found. Waiting for new files...")
 
         time.sleep(0.2)
-        # print("Waiting...")
         turn_leds_off(GPIO, led_pins)  # Turn off LEDs
