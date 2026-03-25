@@ -62,7 +62,7 @@ def crossfade(audio1, audio2, duration, fs):
 def extract_timestamp(file_name):
     """file_name expected like ../temporary_audios/segment_20241120_141750.txt"""
     # Extract date and time from the file name
-    print("file name to split ", file_name)
+    #print("file name to split ", file_name)
     date_part, time_part = file_name.split("/segment_")[-1].split(".txt")[0].split("_")
 
     # Parse the date and time
