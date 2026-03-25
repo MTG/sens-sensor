@@ -166,12 +166,12 @@ def perform_prediction(
 
     # Save predictions to a JSON file
     file_name = "predictions_" + measure_timestamp.strftime("%Y%m%d_%H%M%S") + ".json"
-    txt_file_path = os.path.join(saving_folder_path, file_name)
-    with open(txt_file_path, "w") as file:
+    json_file_path = os.path.join(saving_folder_path, file_name)
+    with open(json_file_path, "w") as file:
         json.dump(predictions, file, indent=4)
     end_pred_time = time.time()
     print(
-        f"Predictions added to local json file, time diff {(current_timestamp-measure_timestamp).total_seconds()} seconds (prediction process took {(end_pred_time-start_pred_time)} seconds)"
+        f"Predictions saved to {json_file_path}, time diff {(current_timestamp-measure_timestamp).total_seconds()} seconds (prediction process took {(end_pred_time-start_pred_time)} seconds)"
     )
 
 
