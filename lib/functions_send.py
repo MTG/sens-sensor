@@ -155,7 +155,7 @@ def send_server_batch():
     send_every_sec = pm.send_every_sec
     max_per_batch = pm.max_per_batch
 
-    '''
+    
     # Configure LEDs
     GPIO.setmode(GPIO.BCM)  # Set up GPIO mode
     # 20--> Yellow
@@ -168,8 +168,7 @@ def send_server_batch():
     watchdog_pin = pm.watchdog
     GPIO.setup(watchdog_pin, GPIO.OUT)
     ####################
-    '''
-
+    
     # Read predictions, send them and delete them once sent
     print("Will enter loop...")
     try:
