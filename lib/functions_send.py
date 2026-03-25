@@ -8,6 +8,9 @@ import sys
 import shutil
 import json
 
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
 
 # Path importing
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -175,19 +178,20 @@ def send_server_batch():
             file_pattern = "*.json"  # file_pattern = "*.txt"
             files = glob.glob(os.path.join(folder_path, file_pattern))
             if len(files) >= max_per_batch:
+                print(f"- Found {len(files)} files to send! Will be sent in batches of {max_per_batch} files...")
                 # There are enough files!
                 files.sort()
                 most_recent = files[-1]
                 # check
-                print("most recent file ", most_recent)
-                print("least recent file ", files[0])
+                print("Most recent file ", most_recent)
+                print("Least recent file ", files[0])
                 data_list = []  # to accumulate jsons of data
                 files_list = []
 
                 batch_counter = 0
                 for single_file in files:
 
-                    print("file ", single_file)
+                    #print("file ", single_file)
                     # Check if file is not empty
                     if os.path.getsize(single_file) > 0:
                         # File has content
@@ -201,7 +205,7 @@ def send_server_batch():
                         except json.JSONDecodeError:
                             # File is old and empty! Delete to not accumulate!
                             os.remove(single_file)
-                            log_text = f"Send process: Deleted because error in JSON --> {single_file}"
+                            log_text = f"Deleting file {single_file} because can't decode JSON"
                             update_logs_file(errors_path, log_text)
                             continue
 
@@ -224,6 +228,7 @@ def send_server_batch():
                         files_list.append(single_file)
 
                         if max_per_batch == batch_counter:
+                            print(f"Batch of {max_per_batch} files ready to be sent to server, sending now...")
                             # Completed message, send it!
                             response = client.post_sensor_data_batch(
                                 data=data_list,
@@ -231,11 +236,10 @@ def send_server_batch():
 
                             if response != False:  # Connection is good
                                 if response.ok == True:  # File sent
+                                    print(f"Files successfully sent! deleting them from disk...")
                                     for single_file in files_list:
-                                        print(f"Prediction sent - {single_file}")
                                         # Proceed to delete sent file
                                         os.remove(single_file)
-                                        print(f"Deleted.")
                                         # OK --> activate LEDs and watchdog
                                         turn_leds_on(GPIO, led_pins)  # ON
                                         GPIO.output(watchdog_pin, GPIO.HIGH)
@@ -244,10 +248,10 @@ def send_server_batch():
                                         turn_leds_off(GPIO, led_pins)  # OFF
                                         ####################
 
-                                        # Reset for next iterations
-                                        batch_counter = 0
-                                        data_list = []
-                                        files_list = []
+                                    # Reset for next iterations
+                                    batch_counter = 0
+                                    data_list = []
+                                    files_list = []
 
                                 else:
                                     print(
@@ -258,7 +262,7 @@ def send_server_batch():
                                     GPIO.output(watchdog_pin, GPIO.LOW)  # Stop pulse
                                     ####################
                             else:
-                                print("No connection.")
+                                print("Files could not be sent, connection error.")
 
                     else:
                         # If it is the most recent (meaning that it is still being written)
@@ -267,13 +271,14 @@ def send_server_batch():
                         # File is old and empty! Delete to not accumulate!
                         os.remove(single_file)
                         log_text = (
-                            f"Send process: Deleted because empty --> {single_file}"
+                            f"Deleting file {single_file} because of being empty"
                         )
                         update_logs_file(errors_path, log_text)
-
-            # If nothing to send, turn off
-            print("waiting...")
+            else:
+                print("- Nothing to send, waiting for new files...")
+            
             turn_leds_off(GPIO, led_pins)
+
             #### WATCHDOG code ###
             GPIO.output(watchdog_pin, GPIO.LOW)  # Stop pulse
             ####################
@@ -285,23 +290,24 @@ def send_server_batch():
 
 
 def update_logs_file(file_path, new_content):
+    print(new_content)  # Also log in console
     # Check if the file exists
     if not os.path.exists(file_path):
         # Create the file and write the initial content
         with open(file_path, "w") as file:
             file.write(new_content + "\n")
-        print(f"File created and content written: {new_content}")
+        #print(f"File created and content written: {new_content}")
     else:
         # Read the current content
         with open(file_path, "r") as file:
             current_content = file.read()
-        print("Current content of the file:")
-        print(current_content)
+        #print("Current content of the file:")
+        #print(current_content)
 
         # Append new content
         with open(file_path, "a") as file:
             file.write(new_content + "\n")
-        print(f"New content appended: {new_content}")
+        #print(f"New content appended: {new_content}")
 
 
 def send_library():
