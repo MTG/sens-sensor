@@ -172,6 +172,7 @@ def send_server_batch():
     counter_status = 0
 
     # Read predictions, send them and delete them once sent
+    print("Will enter loop...")
     try:
         while True:
             # Get JSON files
