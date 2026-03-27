@@ -101,3 +101,7 @@ max_per_batch = 10  # messages max per batch
 
 # LIBRARY EXPERIMENT THRESHOLD
 human_th = 0.25
+
+
+# Set date using google
+set_date = True

@@ -101,6 +101,10 @@ def send_server():
                             )
 
                             if response != False:  # Connection is good
+                                if pm.set_date:
+                                    # For some reason date gets out of sync (in sensor tania), update it regularly, everytime we send something to the server
+                                    os.system("sudo date -s \"$(wget -qSO- --max-redirect=0 google.com 2>&1 | grep Date: | cut -d' ' -f5-8)Z\"")
+
                                 if response.ok == True:  # File sent
                                     print(f"Prediction sent - {single_file}")
                                     # Proceed to delete sent file
