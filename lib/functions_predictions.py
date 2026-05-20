@@ -199,7 +199,7 @@ def initiate(model_CLAP_path, models_predictions_path, pca_path):
     print("------- prediction models loaded -----------")
 
     # Load PCA component
-    pca = joblib.load("data/models/pca_model.pkl")
+    pca = joblib.load(pca_path)
 
     loaded_end = time.time()
     print(
