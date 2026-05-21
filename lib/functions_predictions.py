@@ -84,7 +84,8 @@ def perform_prediction(
     files_path,
     model_CLAP,
     models_predictions,
-    pca,
+    pca_models,
+    pca_models_map,
 ):
     start_pred_time = time.time()
     # Get parameters needed
@@ -104,13 +105,19 @@ def perform_prediction(
         content = f.read().split(";")
         Leq = float(content[0])
         LAeq = float(content[1])
-    # Extract features
+    # Extract CLAP features
     features_single = model_CLAP.get_audio_embedding_from_data(
         [file_data], use_tensor=False
     )
-    # Apply PCA
-    features_single = pca.transform(features_single)
-    print("Extracted CLAP features (and PCAed) for audio with shape", file_data.shape)
+    print("Extracted CLAP features for audio with shape", file_data.shape)
+
+    # Apply PCA (with all models)
+    features_single = {}
+    for pca_model_path in pca_models:
+        print("Applied PCA from path", pca_model_path)
+        features_single[pca_model_path] = pca_models[pca_model_path].transform(
+            features_single
+        )
 
     # GROUP OF FILES ANALYSIS (INTEGRATED)
     if "P" in models_predictions or "E" in models_predictions:
@@ -132,8 +139,8 @@ def perform_prediction(
         features_group = model_CLAP.get_audio_embedding_from_data(
             [joined_audio], use_tensor=False
         )
-        # Apply PCA
-        features_group = pca.transform(features_group)
+        # Apply PCA (use default PCA path)
+        features_group = pca_models[pm.default_pca_path].transform(features_group)
         print("Extracted CLAP features (and PCAed) for joined audio with shape", joined_audio.shape)
 
     # PREDICTIONS
@@ -142,7 +149,7 @@ def perform_prediction(
         if model == "P" or model == "E":
             # Model is P or E
             predictions[str(model + "_inst")] = round(
-                models_predictions[model].predict(features_single)[0], 3
+                models_predictions[model].predict(features_single[pca_models_map[model]])[0], 3
             )
             predictions[str(model + "_intg")] = round(
                 models_predictions[model].predict(features_group)[0], 3
@@ -153,7 +160,7 @@ def perform_prediction(
             if "sources" not in predictions:
                 predictions["sources"] = {}
             predictions["sources"][model] = round(
-                models_predictions[model].predict_proba(features_single)[0][1], 3
+                models_predictions[model].predict_proba(features_single[pca_models_map[model]])[0][1], 3
             )
 
     # Complete dictionary with Leq, LAeq, datetime
@@ -175,7 +182,7 @@ def perform_prediction(
     )
 
 
-def initiate(model_CLAP_path, models_predictions_path, pca_path):
+def initiate(model_CLAP_path, models_predictions_path, default_pca_path):
     # region MODEL LOADING #######################
     # Load the CLAP model to generate features
     code_starts = time.time()
@@ -195,11 +202,23 @@ def initiate(model_CLAP_path, models_predictions_path, pca_path):
     models_predictions = {}
     for model in models_predictions_path:
         print(f"...loading {model} model for predictions...")
-        models_predictions[model] = joblib.load(models_predictions_path[model])
+        models_predictions[model] = joblib.load(models_predictions_path[model]["model"])
     print("------- prediction models loaded -----------")
 
     # Load PCA component
-    pca = joblib.load(pca_path)
+    pca_models = {}
+    pca_models_map = {}
+    print(f"...loading PCA from {default_pca_path}...")
+    pca_models[default_pca_path] = joblib.load(default_pca_path)
+    for model in models_predictions_path:
+        if "pca" in models_predictions_path[model]:
+            pca_path = models_predictions_path[model]["pca"]
+            pca_models_map[model] = pca_path
+            if pca_path not in pca_models:
+                print(f"...loading PCA from {pca_path}...")
+                pca_models[pca_path] = joblib.load(pca_path)
+        else:
+            pca_models_map[model] = default_pca_path  # If no specific PCA for this model, use default PCA
 
     loaded_end = time.time()
     print(
@@ -215,7 +234,7 @@ def initiate(model_CLAP_path, models_predictions_path, pca_path):
     )
     # endregion MODEL LOADING ####################
 
-    return model_CLAP, models_predictions, pca
+    return model_CLAP, models_predictions, pca_models, pca_models_map
 
 
 def sensor_work():
@@ -225,7 +244,6 @@ def sensor_work():
     saving_path = pm.predictions_folder_path
     models_predictions_path = pm.models_predictions_path
     model_CLAP_path = pm.model_CLAP_path
-    pca_path = pm.pca_path
     audios_folder_path = pm.audios_folder_path
     n_segments = pm.n_segments_intg
 
@@ -250,8 +268,8 @@ def sensor_work():
         print(f"Folder created: {saving_path}")
 
     # Load models
-    model_CLAP, models_predictions, pca = initiate(
-        model_CLAP_path, models_predictions_path, pca_path
+    model_CLAP, models_predictions, pca_models, pca_models_map = initiate(
+        model_CLAP_path, models_predictions_path, pm.default_pca_path
     )
 
     # Announce that models are loaded
@@ -318,7 +336,8 @@ def sensor_work():
                         files_path=files_path,  # latests audio paths
                         model_CLAP=model_CLAP,
                         models_predictions=models_predictions,
-                        pca=pca,
+                        pca_models=pca_models,
+                        pca_models_map=pca_models_map,
                     )
                 else:
                     print(

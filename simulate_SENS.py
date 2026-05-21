@@ -26,6 +26,5 @@ sensor_processing(
     seconds_segment=3,  # seconds per audio chunck to analyse
     n_segments=10,  # to integrate for Pleasantness and Eventfulness Integrated
     model_CLAP_path=pm.model_CLAP_path,
-    pca_path=pm.pca_path,
     models_predictions_path=pm.models_predictions_path,
 )

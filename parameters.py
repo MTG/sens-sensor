@@ -48,24 +48,23 @@ birds": "data/models/sources_USM_pca/birds.joblib",
 """
 
 models_predictions_path = {
-    "birds": "data/models/birds.joblib",
-    "construction": "data/models/construction.joblib",
-    "dogs": "data/models/dogs.joblib",
-    "human": "data/models/human.joblib",
-    "music": "data/models/music.joblib",
-    "nature": "data/models/nature.joblib",
-    "siren": "data/models/siren.joblib",
-    "vehicles": "data/models/vehicles_IDMT.joblib",
-    "P": "data/models/model_pleasantness.joblib",
-    "E": "data/models/model_eventfulness.joblib",
+    "birds": {"model": "data/models/birds.joblib", "pca": "data/models/pca_model.pkl"},  # This is an example, the rest of the sources do not have a pca model, but they could be added in the future
+    "construction": {"model": "data/models/construction.joblib", "pca": None},
+    "dogs": {"model": "data/models/dogs.joblib", "pca": None},
+    "human": {"model": "data/models/human.joblib", "pca": None},
+    "music": {"model": "data/models/music.joblib", "pca": None},
+    "nature": {"model": "data/models/nature.joblib", "pca": None},
+    "siren": {"model": "data/models/siren.joblib", "pca": None},
+    "vehicles": {"model": "data/models/vehicles_IDMT.joblib", "pca": None},
+    "P": {"model": "data/models/model_pleasantness.joblib", "pca": None},
+    "E": {"model": "data/models/model_eventfulness.joblib", "pca": None},
 }
 
+# PCA
+default_pca_path = "data/models/pca_model.pkl"
 
 # CLAP MODEL
 model_CLAP_path = "data/models/630k-fusion-best_audio_only.pt"
-
-# PCA
-pca_path = "data/models/pca_model.pkl"
 
 # TEMPORARY AUDIOS FOLDER
 audios_folder_path = "../temporary_audios"

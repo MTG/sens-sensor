@@ -153,12 +153,11 @@ def sensor_processing(
     n_segments,
     model_CLAP_path,
     models_predictions_path,
-    pca_path,
 ):
 
     # Load models
-    model_CLAP, models_predictions, pca = initiate(
-        model_CLAP_path, models_predictions_path, pca_path
+    model_CLAP, models_predictions, pca_models, pca_models_map = initiate(
+        model_CLAP_path, models_predictions_path, pm.default_pca_path
     )
 
     # Load audio
@@ -272,15 +271,29 @@ def sensor_processing(
             features_intg = model_CLAP.get_audio_embedding_from_data(
                 [long_buffer], use_tensor=False
             )
-            # Apply PCA
-            features_segment = pca.transform(features_segment)
-            features_intg = pca.transform(features_intg)
-
+            
             # finish_time = time.time()
 
             # Calculate probabilities
             predictions = {}
+            features_segment_per_pca_model = {}
+            features_intg_per_pca_model = {}
             for model in models_predictions:
+
+                # Apply PCA (note that different models might use different PCA models, so we need to check which one corresponds to each model, and apply it only once for each PCA model)
+                corresponding_pca_model_path = pca_models_map[model]
+                if corresponding_pca_model_path not in features_segment_per_pca_model:
+                    features_segment_per_pca_model[corresponding_pca_model_path] = pca_models[
+                        corresponding_pca_model_path
+                    ].transform(features_segment)
+                if corresponding_pca_model_path not in features_intg_per_pca_model:
+                    features_intg_per_pca_model[corresponding_pca_model_path] = pca_models[
+                        corresponding_pca_model_path
+                    ].transform(features_intg)
+
+                features_segment = features_segment_per_pca_model[corresponding_pca_model_path]
+                features_intg = features_intg_per_pca_model[corresponding_pca_model_path]
+
                 if model == "P" or model == "E":
                     # Model is P or E
                     predictions[str(model + "_inst")] = models_predictions[

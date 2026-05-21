@@ -79,7 +79,7 @@ def main(models_predictions_path, do_pca=False):
     before_memory = get_memory_usage()
     for model in models_predictions_path:
         # print(f"...loading {model} model for predictions...")
-        models_predictions[model] = joblib.load(models_predictions_path[model])
+        models_predictions[model] = joblib.load(models_predictions_path[model]['model'])
         # Get the size of the model file
         """ model_size = os.path.getsize(models_predictions_path[model])
         # Convert to human-readable format (e.g., KB, MB)
