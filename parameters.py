@@ -102,6 +102,19 @@ max_per_batch = 10  # messages max per batch
 # LIBRARY EXPERIMENT THRESHOLD
 human_th = 0.25
 
-
 # Set date using google
 set_date = True
+
+# Save sent data to file
+save_sent_batches_to_file = False
+sent_folder_path = "../sent_data"
+
+# Watchdog
+always_send_watchdog_signal = False
+
+
+# load local parameters file in case there are overwrting parameters
+try:
+    from local_parameters import *
+except ImportError:
+    pass

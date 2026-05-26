@@ -149,6 +149,20 @@ def send_server():
         print("Adios")
 
 
+def send_watchdog_singal_and_blink_leds(led_pins, watchdog_pin):
+    turn_leds_on(GPIO, led_pins)
+    GPIO.output(watchdog_pin, GPIO.HIGH)
+    time.sleep(0.1) 
+    GPIO.output(watchdog_pin, GPIO.LOW)
+    turn_leds_off(GPIO, led_pins) 
+
+
+def send_watchdog_singal(watchdog_pin):
+    GPIO.output(watchdog_pin, GPIO.HIGH)
+    time.sleep(0.1)
+    GPIO.output(watchdog_pin, GPIO.LOW)
+
+
 def send_server_batch():
 
     # Get parameters needed
@@ -195,6 +209,7 @@ def send_server_batch():
                 files_list = []
 
                 batch_counter = 0
+
                 for single_file in files:
 
                     #print("file ", single_file)
@@ -234,44 +249,35 @@ def send_server_batch():
                         files_list.append(single_file)
 
                         if max_per_batch == batch_counter:
-                            print(f"Batch of {max_per_batch} files ready to be sent to server, sending now...")
+                            print(f"Batch of {max_per_batch} files ready to be sent to server, sending now..." + (" (also saving to disk)" if pm.save_sent_batches_to_file else ""))
+                            
+                            if pm.save_sent_batches_to_file:
+                                # Save data to file before sending
+                                if not os.path.exists(pm.sent_folder_path):
+                                    os.makedirs(pm.sent_folder_path)
+                                timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+                                sent_file_path = os.path.join(pm.sent_folder_path, f"{timestamp}_size_{len(data_list)}.json")
+                                with open(sent_file_path, "w") as sent_file:
+                                    json.dump(data_list, sent_file)
+
                             # Completed message, send it!
-                            response = client.post_sensor_data_batch(
-                                data=data_list,
-                            )
+                            response = client.post_sensor_data_batch(data=data_list)
 
                             if response != False:  # Connection is good
                                 if response.ok == True:  # File sent
                                     print(f"Files successfully sent! deleting them from disk...")
                                     for single_file in files_list:
-                                        # Proceed to delete sent file
-                                        os.remove(single_file)
-                                        
-                                        # OK --> activate LEDs and watchdog
-                                        turn_leds_on(GPIO, led_pins)  # ON
-                                        GPIO.output(watchdog_pin, GPIO.HIGH)
-                                        time.sleep(0.1)  # Make sure watchdog receives
-                                        GPIO.output(watchdog_pin, GPIO.LOW)
-                                        turn_leds_off(GPIO, led_pins)  # OFF
-                                        ####################
-
-                                    # Reset for next iterations
+                                        os.remove(single_file) # Proceed to delete files that were already sent
+                                    send_watchdog_singal_and_blink_leds(led_pins, watchdog_pin)
+                                    
                                     batch_counter = 0
                                     data_list = []
                                     files_list = []
 
                                 else:
-                                    print(
-                                        f"Files could not be sent. Server response: {response}"
-                                    )
-                                    
-                                    turn_leds_off(GPIO, led_pins)
-                                    #### WATCHDOG code ###
-                                    GPIO.output(watchdog_pin, GPIO.LOW)  # Stop pulse
-                                    ####################
+                                    print(f"Files could not be sent. Server response: {response}")
                             else:
                                 print("Files could not be sent, connection error.")
-
                     else:
                         # If it is the most recent (meaning that it is still being written)
                         if single_file == most_recent:
@@ -284,14 +290,14 @@ def send_server_batch():
                         update_logs_file(errors_path, log_text)
             else:
                 print("- Nothing to send, waiting for new files...")
+
+
+            if pm.always_send_watchdog_signal:
+                send_watchdog_singal(led_pins, watchdog_pin)
             
-            turn_leds_off(GPIO, led_pins)
+            turn_leds_off(GPIO, led_pins)  # In case leds were not off..
 
-            #### WATCHDOG code ###
-            GPIO.output(watchdog_pin, GPIO.LOW)  # Stop pulse
-            ####################
-
-            time.sleep(send_every_sec)  # wait to accumulate messages for a minute
+            time.sleep(send_every_sec)  # wait to accumulate new messages 
 
             sys.stdout.flush()  # Flush the output buffer to ensure all prints are shown in real-time
 
