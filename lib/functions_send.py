@@ -149,7 +149,7 @@ def send_server():
         print("Adios")
 
 
-def send_watchdog_singal_and_blink_leds(led_pins, watchdog_pin):
+def send_watchdog_signal_and_blink_leds(led_pins, watchdog_pin):
     turn_leds_on(GPIO, led_pins)
     GPIO.output(watchdog_pin, GPIO.HIGH)
     time.sleep(0.1) 
@@ -157,7 +157,7 @@ def send_watchdog_singal_and_blink_leds(led_pins, watchdog_pin):
     turn_leds_off(GPIO, led_pins) 
 
 
-def send_watchdog_singal(watchdog_pin):
+def send_watchdog_signal(watchdog_pin):
     GPIO.output(watchdog_pin, GPIO.HIGH)
     time.sleep(0.1)
     GPIO.output(watchdog_pin, GPIO.LOW)
@@ -268,7 +268,7 @@ def send_server_batch():
                                     print(f"Files successfully sent! deleting them from disk...")
                                     for single_file in files_list:
                                         os.remove(single_file) # Proceed to delete files that were already sent
-                                    send_watchdog_singal_and_blink_leds(led_pins, watchdog_pin)
+                                    send_watchdog_signal_and_blink_leds(led_pins, watchdog_pin)
                                     
                                     batch_counter = 0
                                     data_list = []
@@ -293,7 +293,7 @@ def send_server_batch():
 
 
             if pm.always_send_watchdog_signal:
-                send_watchdog_singal(led_pins, watchdog_pin)
+                send_watchdog_signal(watchdog_pin)
             
             turn_leds_off(GPIO, led_pins)  # In case leds were not off..
 
