@@ -289,7 +289,7 @@ def send_server_batch():
                         )
                         update_logs_file(errors_path, log_text)
             else:
-                print("- Nothing to send, waiting for new files...")
+                print(f"- Not enough new files to send ({len(files)}), waiting for new files...")
 
 
             if pm.always_send_watchdog_signal:
